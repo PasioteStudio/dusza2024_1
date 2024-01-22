@@ -80,16 +80,42 @@ def jatek_lezarasa():
             }
             file=open("edermenyek.txt","a",encoding="utf8")
             file.write(eredmeny_txt_be["jatek_nev"])
-            szorzo=10
-            #TODO
+            szorzo=0
             for eredmeny in eredmeny_txt_be["eredmenyek"]:
                 file.write(f"{eredmeny['alany']};{eredmeny['esemeny']};{eredmeny['eredmeny']};{szorzo}")
             file.close()
+            kezelo.szorzo_frissitese(jatek["neve"])
             print("Siker!")
             start()
     print("Hibás!")
     start()
-#a = 1 + (5/(2 ** k - 1))
+def lekerdezesek():
+    print("1- Ranglista")
+    print("2- Játék statisztika")
+    print("3- Fogadási statisztika")
+    print("4- Vissza")
+    while True:  
+        user_input = kezelo.NumInput("Válassz: ")
+        if(user_input > 4 or user_input<1):
+            continue
+        elif(user_input == 1):
+            kezelo.ranglista()
+            continue
+        elif(user_input == 2):
+            kezelo.jatek_statisztika()
+            continue
+        elif(user_input == 3):
+            while True:
+                jatek_nev=input("Kiválasztott játék: ")
+                if(not kezelo.egyedi_jatek_nev(jatek_nev)):   
+                    kezelo.fogadasi_statisztika(jatek_nev)
+                    continue
+                else:
+                    continue
+        elif(user_input == 4):
+            start()
+            break
+
 def start():
     print("1- Játék létrehozása")
     print("2- Fogadás leadása")
@@ -110,7 +136,7 @@ def start():
             jatek_lezarasa()
             continue
         elif(user_input == 4):
-            jatek_letrehozasa()
+            lekerdezesek()
             continue
         elif(user_input == 5):
             break
