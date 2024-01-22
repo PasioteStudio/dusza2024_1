@@ -1,0 +1,6 @@
+Horváth József;Lajos és Bettina programjának futása;2;3
+Lajos
+Bettina
+programfutásának sebessége
+programjának kimenete
+programja hibát dob
