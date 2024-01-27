@@ -1,3 +1,0 @@
-Kovács Imre;Lajos és Bettina programjának futása;10;Lajos;programfutásának sebessége;6
-Asd;Lajos és Bettina programjának futása;10;Lajos;programfutásának sebessége;40
-Ati;Baszás;50;Midi;Yoko;10

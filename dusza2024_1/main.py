@@ -37,7 +37,7 @@ def fogadas_leadasa():
     elerheto_jatekok=kezelo.le_van_e_zarva_osszes_jatekot_vissza_adja()
     print(elerheto_jatekok)
     #TODO: design
-    
+    sikeres=False
     print(f"Pontod: {pont}")
     kivalasztott_jatek = input("Válassz egy játékot!: ")
     for jatek in elerheto_jatekok:
@@ -66,8 +66,12 @@ def fogadas_leadasa():
             file=open("fogadasok.txt","a",encoding="utf8")
             file.write(f"{fogado_fel};{kivalasztott_jatek};{kivalasztott_tet};{kivalasztott_alany};{kivalasztott_esemeny};{kivalasztott_ertek}\n")
             file.close()
+            sikeres=True
             break
-    print("Sikeresen leadott fogadás!")
+    if sikeres:
+        print("Sikeresen leadott fogadás!")
+    else:
+        print("Sikertelen fogadás (talán még/már nincs elérhető játék)!")
     pass
 def jatek_lezarasa():
     neved=input("Neved: ")
@@ -121,6 +125,8 @@ def lekerdezesek():
         elif(user_input == 3):
             while True:
                 jatek_nev=input("Kiválasztott játék: ")
+                if(jatek_nev == ""):
+                    break
                 if(not kezelo.egyedi_jatek_nev(jatek_nev)):   
                     kezelo.fogadasi_statisztika(jatek_nev)
                     break
