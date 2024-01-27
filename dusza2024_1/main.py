@@ -1,3 +1,4 @@
+#Sigmakik
 import kezelo as kezelo
 def jatek_letrehozasa():
     szerzo = input("Ki a szervező? ")
@@ -22,49 +23,58 @@ def jatek_letrehozasa():
             break
         esemenyek.append(input4)
     file=open("jatekok.txt","a",encoding="utf8")
-    file.write(f"{szerzo};{megnevezes};{len(alanyok)};{len(esemenyek)}")
+    file.write(f"{szerzo};{megnevezes};{len(alanyok)};{len(esemenyek)}\n")
     for alany in alanyok:
-        file.write(f"{alany}")
+        file.write(f"{alany}\n")
     for esemeny in esemenyek:
-        file.write(f"{esemeny}")
+        file.write(f"{esemeny}\n")
     file.close()
 def fogadas_leadasa():
-    pont = 100
     fogado_fel = input("Fogadó fél neve: ")
-    #Tétjeit le kell vonni és kiszámolni a megnyert összeget, így megkapjuk a "dinamikus" pontjait
-    
+    pont = kezelo.dinamikusPontSzamolás(fogado_fel)
     print(f"Pontod: {pont}")
         
-    elerheto_jatekok=kezelo.le_van_e_zarva()
+    elerheto_jatekok=kezelo.le_van_e_zarva_osszes_jatekot_vissza_adja()
     print(elerheto_jatekok)
     #TODO: design
+    
+    print(f"Pontod: {pont}")
     kivalasztott_jatek = input("Válassz egy játékot!: ")
-    while True:
-        for jatek in elerheto_jatekok:
-            if(kivalasztott_jatek == jatek["jatek_neve"]):
-                while True:
-                    kivalasztott_alany = input("Válassz egy alanyt!: ")
-                    kivalasztott_esemeny = input("Válassz egy eseményt!: ")
-                    if(kezelo.fogadott_e_mar()):
-                        print("Már fogadtál erre!")
-                        continue
-                    break
-                kivalasztott_ertek = input("Válassz egy értéket!: ")
-                while True:
-                    kivalasztott_tet = kezelo.NumInput("Válassz egy tétet!: ")
-                    if(kivalasztott_tet>pont):
-                        continue
-                    break
-                file=open("fogadasok.txt","a",encoding="utf8")
-                file.write(f"{fogado_fel};{kivalasztott_jatek};{kivalasztott_tet};{kivalasztott_alany};{kivalasztott_esemeny};{kivalasztott_ertek}")
-                file.close()
+    for jatek in elerheto_jatekok:
+        if(kivalasztott_jatek == jatek["jatek_neve"]):
+            while True:
+                kivalasztott_alany = input("Válassz egy alanyt!: ")
+                kivalasztott_esemeny = input("Válassz egy eseményt!: ")
+                if(kezelo.fogadott_e_mar(fogado_fel,kivalasztott_jatek,kivalasztott_alany,kivalasztott_esemeny)):
+                    print("Már fogadtál erre!")
+                    continue
                 break
-        continue
+            while True:
+                kivalasztott_ertek = input("Válassz egy értéket!: ")
+                if ";" in kivalasztott_ertek:
+                    continue
+                break
+            while True:
+                kivalasztott_tet = kezelo.NumInput("Válassz egy tétet!: ")
+                if(kivalasztott_tet>pont):
+                    print("Nincs ennyi pontod, amit feltegyél!")
+                    continue
+                elif(kivalasztott_tet<0):
+                    print("Legalább tegyél fel valamennyit!")
+                    continue
+                break
+            file=open("fogadasok.txt","a",encoding="utf8")
+            file.write(f"{fogado_fel};{kivalasztott_jatek};{kivalasztott_tet};{kivalasztott_alany};{kivalasztott_esemeny};{kivalasztott_ertek}\n")
+            file.close()
+            break
+    print("Sikeresen leadott fogadás!")
+    pass
 def jatek_lezarasa():
     neved=input("Neved: ")
-    jatek_megnevezese=("Lezárandó játék: ")
-    for jatek in kezelo.le_van_e_zarva():
-        if(jatek["szerzo"] == neved and jatek["neve"] == jatek_megnevezese):
+    jatek_megnevezese=input("Lezárandó játék: ")
+    siker=False
+    for jatek in kezelo.le_van_e_zarva_osszes_jatekot_vissza_adja():
+        if(jatek["szervezo"] == neved and jatek["jatek_neve"] == jatek_megnevezese):
             eredmenyek = []
             for alany in jatek['alanyok']:
                 for esemeny in jatek['esemenyek']:    
@@ -75,26 +85,30 @@ def jatek_lezarasa():
                         "eredmeny":eredmeny
                     })
             eredmeny_txt_be={
-                "jatek_nev":jatek["nev"],
+                "jatek_nev":jatek["jatek_neve"],
                 "eredmenyek":eredmenyek
             }
-            file=open("edermenyek.txt","a",encoding="utf8")
-            file.write(eredmeny_txt_be["jatek_nev"])
+            file=open("eredmenyek.txt","a",encoding="utf8")
+            file.write(eredmeny_txt_be["jatek_nev"]+"\n")
             szorzo=0
             for eredmeny in eredmeny_txt_be["eredmenyek"]:
-                file.write(f"{eredmeny['alany']};{eredmeny['esemeny']};{eredmeny['eredmeny']};{szorzo}")
+                file.write(f"{eredmeny['alany']};{eredmeny['esemeny']};{eredmeny['eredmeny']};{szorzo}\n")
             file.close()
-            kezelo.szorzo_frissitese(jatek["neve"])
-            print("Siker!")
-            start()
-    print("Hibás!")
-    start()
+            kezelo.szorzo_frissitese(jatek["jatek_neve"])
+            siker=True
+    
+    if siker:
+        print("Siker!")
+    else:
+        print("Hibás!")
+    pass
 def lekerdezesek():
-    print("1- Ranglista")
-    print("2- Játék statisztika")
-    print("3- Fogadási statisztika")
-    print("4- Vissza")
     while True:  
+        print("----------")
+        print("1- Ranglista")
+        print("2- Játék statisztika")
+        print("3- Fogadási statisztika")
+        print("4- Vissza")
         user_input = kezelo.NumInput("Válassz: ")
         if(user_input > 4 or user_input<1):
             continue
@@ -109,20 +123,20 @@ def lekerdezesek():
                 jatek_nev=input("Kiválasztott játék: ")
                 if(not kezelo.egyedi_jatek_nev(jatek_nev)):   
                     kezelo.fogadasi_statisztika(jatek_nev)
-                    continue
+                    break
                 else:
                     continue
         elif(user_input == 4):
-            start()
             break
 
 def start():
-    print("1- Játék létrehozása")
-    print("2- Fogadás leadása")
-    print("3- Játék lezárása")
-    print("4- Lekérdezések")
-    print("5- Kilépés")
     while True:  
+        print("----------")
+        print("1- Játék létrehozása")
+        print("2- Fogadás leadása")
+        print("3- Játék lezárása")
+        print("4- Lekérdezések")
+        print("5- Kilépés")
         user_input = kezelo.NumInput("Válassz: ")
         if(user_input > 5 or user_input<1):
             continue

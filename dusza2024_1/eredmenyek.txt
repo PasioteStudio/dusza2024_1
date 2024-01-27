@@ -1,0 +1,5 @@
+Baszás
+Midi;Lyuk;10;0
+Midi;Yoko;10;6.0
+Zsóti;Lyuk;20;0
+Zsóti;Yoko;30;0
