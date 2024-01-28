@@ -179,7 +179,7 @@ def fogadott_e_mar(nev,jatek,alany,esemeny):
 def NumInput(bekeres):
     while True:
         user_input = input(bekeres)
-        if user_input.isnumeric:
+        if user_input.isnumeric():
             return int(user_input)
         else:
             continue
