@@ -273,7 +273,6 @@ def dinamikusPontSzamolás(fogado_fel):
         parts=line.strip().split(";")
         if(parts[0]==fogado_fel):
             default_point-=int(parts[2])
-            print("Hamis")
             eredmeny_ha_van = eredmeny_jatekhoz(parts[1])
             if(eredmeny_ha_van!={}):
                 if(eredmeny_ha_van[parts[3]][parts[4]]["eredmeny"] == parts[5]):   
