@@ -1,7 +1,7 @@
 import sys
 import kezelo
 import hashlib
-from colorama import Fore, Back, Style
+from PyQt5 import QtGui,QtCore
 from PyQt5.QtWidgets import QLabel, QApplication, QWidget, QPushButton, QLineEdit, QVBoxLayout
 
 def hashPassword(password:str)->str:
@@ -57,6 +57,9 @@ class MyWindow(QWidget):
 
         # Képernyő címe
         self.setWindowTitle('A Sorsod Borsod')
+        
+        icon_path="icon.jpg"
+        self.setWindowIcon(QtGui.QIcon(icon_path))
     def main(self):
         self.resetLayout()
         # CreateGomb létrehozása
@@ -261,5 +264,4 @@ if __name__ == '__main__':
     # képernyő létrehozása
     window = MyWindow()
     window.show()
-    
     sys.exit(app.exec_())
