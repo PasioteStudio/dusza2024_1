@@ -36,7 +36,7 @@ def fogadas_leadasa():
         
     elerheto_jatekok=kezelo.le_van_e_zarva_osszes_jatekot_vissza_adja()
     print(elerheto_jatekok)
-    #TODO: design
+
     sikeres=False
     print(f"Pontod: {pont}")
     kivalasztott_jatek = input("Válassz egy játékot!: ")

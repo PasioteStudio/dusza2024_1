@@ -3,87 +3,7 @@ import kezelo
 
 from PyQt5 import QtGui,QtCore
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QLabel, QApplication, QWidget, QPushButton, QLineEdit, QVBoxLayout,QHBoxLayout,QGridLayout,QMainWindow,QScrollArea,QAbstractScrollArea
-
-"""
-
-
-def fogadas_leadasa():
-    fogado_fel = input("Fogadó fél neve: ")
-    pont = kezelo.dinamikusPontSzamolás(fogado_fel)
-    print(f"Pontod: {pont}")
-        
-    elerheto_jatekok=kezelo.le_van_e_zarva_osszes_jatekot_vissza_adja()
-    print(elerheto_jatekok)
-    #TODO: design
-    sikeres=False
-    print(f"Pontod: {pont}")
-    kivalasztott_jatek = input("Válassz egy játékot!: ")
-    for jatek in elerheto_jatekok:
-        if(kivalasztott_jatek == jatek["jatek_neve"]):
-            while True:
-                kivalasztott_alany = input("Válassz egy alanyt!: ")
-                kivalasztott_esemeny = input("Válassz egy eseményt!: ")
-                if(kezelo.fogadott_e_mar(fogado_fel,kivalasztott_jatek,kivalasztott_alany,kivalasztott_esemeny)):
-                    print("Már fogadtál erre!")
-                    continue
-                break
-            while True:
-                kivalasztott_ertek = input("Válassz egy értéket!: ")
-                if ";" in kivalasztott_ertek:
-                    continue
-                break
-            while True:
-                kivalasztott_tet = kezelo.NumInput("Válassz egy tétet!: ")
-                if(kivalasztott_tet>pont):
-                    print("Nincs ennyi pontod, amit feltegyél!")
-                    continue
-                elif(kivalasztott_tet<0):
-                    print("Legalább tegyél fel valamennyit!")
-                    continue
-                break
-            file=open("fogadasok.txt","a",encoding="utf8")
-            file.write(f"{fogado_fel};{kivalasztott_jatek};{kivalasztott_tet};{kivalasztott_alany};{kivalasztott_esemeny};{kivalasztott_ertek}\n")
-            file.close()
-            sikeres=True
-            break
-    if sikeres:
-        print("Sikeresen leadott fogadás!")
-    else:
-        print("Sikertelen fogadás (talán még/már nincs elérhető játék)!")
-    pass
-def lekerdezesek():
-    while True:  
-        print("----------")
-        print("1- Ranglista")
-        print("2- Játék statisztika")
-        print("3- Fogadási statisztika")
-        print("4- Vissza")
-        user_input = kezelo.NumInput("Válassz: ")
-        if(user_input > 4 or user_input<1):
-            continue
-        elif(user_input == 1):
-            kezelo.ranglista()
-            continue
-        elif(user_input == 2):
-            kezelo.jatek_statisztika()
-            continue
-        elif(user_input == 3):
-            while True:
-                jatek_nev=input("Kiválasztott játék: ")
-                if(jatek_nev == ""):
-                    break
-                if(not kezelo.egyedi_jatek_nev(jatek_nev)):   
-                    kezelo.fogadasi_statisztika(jatek_nev)
-                    break
-                else:
-                    continue
-        elif(user_input == 4):
-            break
-
-"""
-        
-
+from PyQt5.QtWidgets import QLabel, QApplication, QWidget, QPushButton, QLineEdit, QVBoxLayout,QHBoxLayout,QGridLayout,QMainWindow,QScrollArea,QAbstractScrollArea,QGroupBox
 
 class MyWindow(QWidget):
     def __init__(self):
@@ -101,7 +21,7 @@ class MyWindow(QWidget):
         self.main1= """
             * {
                 border:10px solid black;
-                background-color: red;
+                background-color: #666666;
                 font-size:30px;
                 
             }
@@ -213,10 +133,14 @@ class MyWindow(QWidget):
         self.input_jelszo_megjelenitese.clicked.connect(lambda: kezelo.jelszo_megjelenitese(self.input_jelszo,self.input_jelszo_megjelenitese,"Jelszavad"))
         
         self.bejelentkezesGomb = QPushButton('Bejelentkezés', self)
-        def kurvaAnyadCircularImport():
-            felhasznalonev,nev=kezelo.benyujtott_bejelentkezes(self.input_felhasznalonev,self.input_jelszo)
-            self.bejelentkezett_oldal(felhasznalonev,nev)
-        self.bejelentkezesGomb.clicked.connect(kurvaAnyadCircularImport)
+        def CircularImport():
+            szotar=kezelo.benyujtott_bejelentkezes(self.input_felhasznalonev,self.input_jelszo)
+            if szotar["státusz"]==True:
+                felhasznalonev,nev=szotar["válasz"]
+                self.bejelentkezett_oldal(felhasznalonev,nev)
+            else:
+                print(szotar["válasz"])#TODO: ERROR
+        self.bejelentkezesGomb.clicked.connect(CircularImport)
         self.Vissza = QPushButton('Vissza', self)
         self.Vissza.clicked.connect(self.main)
         
@@ -246,7 +170,6 @@ class MyWindow(QWidget):
         self.mylayout.addWidget(self.elerheto_jatekok,1,0,1,2)
         jatekok=kezelo.le_van_e_zarva_osszes_jatekot_vissza_adja()
         for id,jatek in enumerate(jatekok):
-            print("asdsa"+str(jatek))
             
             substring1=[", "]*len(jatek["alanyok"])
             substring2=[", "]*len(jatek["esemenyek"])
@@ -258,20 +181,18 @@ class MyWindow(QWidget):
                     self.current=0
                     return x
                 return x+y
-            alanyok="".join(map(str,map(lambda x,y: orulet(x,y,0),i["alanyok"],substrings[0])))
-            esemenyek="".join(map(str,map(lambda x,y: orulet(x,y,1),i["esemenyek"],substrings[1])))
+            alanyok="".join(map(str,map(lambda x,y: orulet(x,y,0),jatek["alanyok"],substrings[0])))
+            esemenyek="".join(map(str,map(lambda x,y: orulet(x,y,1),jatek["esemenyek"],substrings[1])))
             #Hozzáadom az alanyokhoz az egyes alanyt és egy vesszőt, az utolsó elemnél a vesszőt mindig elhagyom és ezt megcsinálom az eseményekkel is
             self.jatek_neve = QLabel(f"{jatek['jatek_neve']}\nAlanyok:{alanyok}\nEsemények:{esemenyek}", self)
             self.fogadasGomb = QPushButton('Fogadás', self)
             self.fogadasGomb.clicked.connect(lambda: self.fogadas(jatek))
-            row=id%2
-            column=int(id/2)
+            sor=id%2
+            oszlop=int(id/2)
             if id/2!=round(id/2):
-                column=int(round(id/2)-1)
-            print(row)
-            print(column)
-            self.mylayout.addWidget(self.jatek_neve,2+row,0+column,1,1)
-            self.mylayout.addWidget(self.fogadasGomb,3+row,0+column,1,1)
+                oszlop=int(round(id/2)-1)
+            self.mylayout.addWidget(self.jatek_neve,2+sor,0+oszlop,1,1)
+            self.mylayout.addWidget(self.fogadasGomb,3+sor,0+oszlop,1,1)
         
         
         self.Vissza = QPushButton('Vissza', self)
@@ -305,28 +226,21 @@ class MyWindow(QWidget):
         self.Vissza = QPushButton('Vissza', self)
         self.Vissza.clicked.connect(lambda: self.bejelentkezett_oldal(felhasznalonev,nev))
         self.mylayout.addWidget(self.Vissza)
-    def jatek_letrehozasa_clicked(self):
-        if(kezelo.egyedi_jatek_nev(self.megnevezes.text())):
-            return
     def jatek_letrehozasa(self,felhasznalonev:str,nev:str):
         self.layoutvisszaallitasa()
         self.mindig_latszik_belepve(felhasznalonev,nev)
         
-        self.szervezo = QLabel("Ki a szervező? ",self)
-        self.szervezo_input = QLineEdit(self)
-        self.szervezo_input.setPlaceholderText("szervező")
-        self.mylayout.addWidget(self.szervezo,1,0,1,1)
-        self.mylayout.addWidget(self.szervezo_input,1,1,1,1)
+        self.megnevezes = QLabel("Mi a játék megnevezése? (egyedinek kell lennie) ",self)
         
-        self.megnevezes = QLineEdit(self)
-        
-        self.megnevezes.setPlaceholderText("Mi a játék megnevezése? (egyedinek kell lennie) ")
+        self.megnevezes_input=QLineEdit(self)
+        self.megnevezes_input.setPlaceholderText("Megnevezése")
         self.alanyok_label = QLabel("Kik az alanyok? (különböznek egymástól)",self)
         self.esemenyek_label = QLabel("Mik az események? (különböznek egymástól)",self)
-        self.mylayout.addWidget(self.megnevezes,2,0,1,1)
-        #TODO:
+        self.mylayout.addWidget(self.megnevezes,1,0,1,1)
+
         alap_alanyok_szama=2
         alap_esemenyek_szama=2
+        
         self.osszesAlanyTarolo=QScrollArea(self)
         self.osszesAlanyTarolo.setWidgetResizable(True)
         self.osszesAlanyTarolo.setFixedHeight(200)
@@ -339,51 +253,38 @@ class MyWindow(QWidget):
         self.osszesEsemenyTarolo.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.osszesAlany=QGridLayout(self.osszesAlanyTarolo)
         self.osszesEsemeny = QGridLayout(self.osszesEsemenyTarolo)
+        
+        self.osszesAlanyBox = QGroupBox()
+        self.osszesAlanyBox.setLayout(self.osszesAlany)
+        self.osszesAlanyTarolo.setWidget(self.osszesAlanyBox)
+        
+        self.osszesEsemenyBox = QGroupBox()
+        self.osszesEsemenyBox.setLayout(self.osszesEsemeny)
+        self.osszesEsemenyTarolo.setWidget(self.osszesEsemenyBox)
 
         self.alanyok_plusz=QPushButton("+",self)
         self.esemenyek_plusz=QPushButton("+",self)
-        self.alanyok_plusz.clicked.connect(lambda: kezelo.plusAlanyokésEsemenyek(1,0,self.osszesAlany,self.osszesEsemeny,self.osszesAlanyTarolo,self.osszesEsemenyTarolo))
-        self.esemenyek_plusz.clicked.connect(lambda: kezelo.plusAlanyokésEsemenyek(0,1,self.osszesAlany,self.osszesEsemeny,self.osszesAlanyTarolo,self.osszesEsemenyTarolo))
-        self.mylayout.addWidget(self.alanyok_label,3,0,1,1)
-        self.mylayout.addWidget(self.alanyok_plusz,3,1,1,1)
-        self.mylayout.addWidget(self.osszesAlanyTarolo,4,0,1,1)
-        kezelo.plusAlanyokésEsemenyek(alap_alanyok_szama,0,self.osszesAlany,self.osszesEsemeny,self.osszesAlanyTarolo,self.osszesEsemenyTarolo)
-        self.mylayout.addWidget(self.esemenyek_label,5,0,1,1)
-        self.mylayout.addWidget(self.esemenyek_plusz,5,1,1,1)
-        self.mylayout.addWidget(self.osszesEsemenyTarolo,6,0,1,1)
-        kezelo.plusAlanyokésEsemenyek(0,alap_esemenyek_szama,self.osszesAlany,self.osszesEsemeny,self.osszesAlanyTarolo,self.osszesEsemenyTarolo)
+        self.alanyok_plusz.clicked.connect(lambda: kezelo.plusAlanyokésEsemenyek(1,0,self.osszesAlany,self.osszesEsemeny,self.osszesAlanyBox,self.osszesEsemenyBox))
+        self.esemenyek_plusz.clicked.connect(lambda: kezelo.plusAlanyokésEsemenyek(0,1,self.osszesAlany,self.osszesEsemeny,self.osszesAlanyBox,self.osszesEsemenyBox))
+        self.mylayout.addWidget(self.alanyok_label,2,0,1,1)
+        self.mylayout.addWidget(self.alanyok_plusz,2,1,1,1)
+        self.mylayout.addWidget(self.osszesAlanyTarolo,3,0,1,1)
+        kezelo.plusAlanyokésEsemenyek(alap_alanyok_szama,0,self.osszesAlany,self.osszesEsemeny,self.osszesAlanyBox,self.osszesEsemenyBox)
+        self.mylayout.addWidget(self.esemenyek_label,4,0,1,1)
+        self.mylayout.addWidget(self.esemenyek_plusz,4,1,1,1)
+        self.mylayout.addWidget(self.osszesEsemenyTarolo,5,0,1,1)
+        kezelo.plusAlanyokésEsemenyek(0,alap_esemenyek_szama,self.osszesAlany,self.osszesEsemeny,self.osszesAlanyBox,self.osszesEsemenyBox)
         
         self.keszGomb=QPushButton("Kész",self)
-        self.keszGomb.clicked.connect(lambda: self.jatek_letrehozasa_clicked())
-        self.mylayout.addWidget(self.keszGomb,7,0,1,1)
+        self.keszGomb.clicked.connect(lambda: kezelo.benyujtott_jatek_letrehozasa(felhasznalonev,self.megnevezes_input,self.osszesAlanyBox,self.osszesEsemenyBox))
+        
+        
+        
+        
+        self.mylayout.addWidget(self.keszGomb,6,0,1,1)
         self.Vissza=QPushButton("Vissza",self)
         self.Vissza.clicked.connect(lambda: self.szervezo_oldal(felhasznalonev,nev))
-        self.mylayout.addWidget(self.Vissza,7,1,1,1)
-        """
-        
-        while True:
-            input3 = input("Kik az alanyok? (különböznek egymástól) ")
-            if(input3 in self.osszesAlany.children()):
-                print("Ő már volt!")
-                continue
-            if(input3 == ""):
-                break
-            self.alanyok.append(input3)
-        esemenyek = []
-        while True:
-            input4 = input("Mik az események? ")
-            if(input4 == ""):
-                break
-            esemenyek.append(input4)
-        file=open("jatekok.txt","a",encoding="utf8")
-        file.write(f"{self.szervezo};{self.megnevezes};{len(self.alanyok)};{len(esemenyek)}\n")
-        for alany in self.alanyok:
-            file.write(f"{alany}\n")
-        for esemeny in esemenyek:
-            file.write(f"{esemeny}\n")
-        file.close()
-        
-        """
+        self.mylayout.addWidget(self.Vissza,6,1,1,1)
     def lezaras(self,jatek,felhasznalonev,nev):
         self.layoutvisszaallitasa()
         self.mindig_latszik_belepve(felhasznalonev,nev)
@@ -398,12 +299,12 @@ class MyWindow(QWidget):
                 self.mylayout.addWidget(self.uzenet)
                 
         self.keszGomb=QPushButton("Kész",self)
-        def KurvaAnyadCircularImport():
+        def CircularImport():
             kezelo.benyujtott_eredmeny(jatek,self.alanyok_es_esemyenek_uzenetek)
             self.uzenet= QLabel(f"{jatek['jatek_neve']} lezárva!",self)
             self.mylayout.addWidget(self.uzenet)
             self.szervezo_oldal(felhasznalonev,nev)
-        self.keszGomb.clicked.connect(KurvaAnyadCircularImport)
+        self.keszGomb.clicked.connect(CircularImport)
 
         self.mylayout.addWidget(self.keszGomb)
         self.Vissza = QPushButton("Vissza",self)
@@ -453,3 +354,4 @@ if __name__ == '__main__':
     
     
     sys.exit(app.exec_())
+#TODO: lekérdezések, fogadás leadása

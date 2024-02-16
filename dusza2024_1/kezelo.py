@@ -1,7 +1,7 @@
 #Sigmakik
 import hashlib
 import gui
-from PyQt5.QtWidgets import QLineEdit,QGridLayout,QWidget
+from PyQt5.QtWidgets import QLineEdit,QGridLayout,QWidget,QGroupBox
 def szorzo_frissitese(jatek_neve:str):
     fajl=open("fogadasok.txt","r",encoding="utf8")
     sorok=fajl.readlines()
@@ -370,15 +370,14 @@ def benyujtott_regisztracio(felhasznalo_nev_input:QLineEdit,jelszo_input:QLineEd
         if reszek[0]==felhasznalo_nev:
             egyedi=False
     if not egyedi:
-        print("A felhasználónév foglalt!")
-        return
+        return "A felhasználónév foglalt!"#TODO ERROR
     jelszo = jelszo_input.text()
     if jelszo != megerosito_jelszo_input.text():
-        print("Nem egyezik meg a jelszó!")
-        return
+        return "Nem egyezik meg a jelszó!" #TODO ERROR
     fajl = open("users.txt","a",encoding="utf8")
     fajl.write(f"{felhasznalo_nev};{jelszo_titkositasa(jelszo)};{felhasznalo_nev}\n")
     fajl.close()
+    return True
 def benyujtott_bejelentkezes(input_felhasznalonev:QLineEdit,input_jelszo:QLineEdit):
     felhasznalonev = input_felhasznalonev.text()
     print("Felh:", felhasznalonev)
@@ -400,15 +399,12 @@ def benyujtott_bejelentkezes(input_felhasznalonev:QLineEdit,input_jelszo:QLineEd
             nev=reszek[2]
             talalt=True
     if not talalt:
-        print("Nincs ilyen felhasználónév vagy jelszó!")
+        return {"státusz":False,"válasz":"Nincs ilyen felhasználónév vagy jelszó!"}
     else:
-        return [felhasznalonev,nev]
+        return {"státusz":True,"válasz":[felhasznalonev,nev]}
 def benyujtott_eredmeny(jatek:dict,alanyok_es_esemyenek_messages:list):
     eredmenyek = []
     for message in alanyok_es_esemyenek_messages:
-        print(message.property("esemeny"))
-        print(message.property("alany"))
-        print(message.text())
         eredmenyek.append({
         "alany":message.property("alany"),
         "esemeny":message.property("esemeny"),
@@ -429,7 +425,7 @@ def benyujtott_eredmeny(jatek:dict,alanyok_es_esemyenek_messages:list):
 def plusAlanyokésEsemenyek(plusz_alany:int,plusz_esemeny:int,osszesAlany:QGridLayout,osszesEsemeny:QGridLayout,alanyTarolo:QWidget,esemenyTarolo:QWidget):
     
     for i in range(plusz_alany):
-        hany=len(alanyTarolo.children())
+        hany=len(alanyTarolo.children())-1
         sor=int(hany/2)
         oszlop=hany%2
         #Kiszámoljuk a sort és oszlopot, hogy ne egymás alá, de kettessével mellé is tegye
@@ -439,7 +435,7 @@ def plusAlanyokésEsemenyek(plusz_alany:int,plusz_esemeny:int,osszesAlany:QGridL
         uj_alany.setFixedHeight(100)
         osszesAlany.addWidget(uj_alany,sor,oszlop,1,1)
     for i in range(plusz_esemeny):
-        hany=len(esemenyTarolo.children())
+        hany=len(esemenyTarolo.children())-1
         sor=int(hany/2)
         oszlop=hany%2
         
@@ -447,6 +443,28 @@ def plusAlanyokésEsemenyek(plusz_alany:int,plusz_esemeny:int,osszesAlany:QGridL
         uj_esemeny.setPlaceholderText(f"esemeny")
         uj_esemeny.setFixedHeight(100)
         osszesEsemeny.addWidget(uj_esemeny,sor,oszlop,1,1)
-    
+def benyujtott_jatek_letrehozasa(felhasznalonev:str,megnevezes_input:QLineEdit,osszesAlany:QGroupBox,osszesEsemeny:QGroupBox):   
+    if not egyedi_jatek_nev(megnevezes_input.text()):
+        return "Nem egyedi játék név!!"#TODO ERROR
+    alanyok=[]
+    for alany in osszesAlany.children():
+        if alany.text() not in alanyok:
+            alanyok.append(alany.text())
+        else:
+            return f"{alany.text()} már volt!"#TODO ERROR
+    esemenyek = []
+    for esemeny in osszesEsemeny.children():
+        if esemeny.text() not in esemenyek:
+            esemenyek.append(esemeny.text())
+        else:
+            return f"{esemeny.text()} már volt!"#TODO ERROR
+    fajl=open("jatekok.txt","a",encoding="utf8")
+    fajl.write(f"{felhasznalonev};{megnevezes_input.text()};{len(alanyok)};{len(esemenyek)}\n")
+    for alany in alanyok:
+        fajl.write(f"{alany}\n")
+    for esemeny in esemenyek:
+        fajl.write(f"{esemeny}\n")
+    fajl.close()
+    return True
     
     
