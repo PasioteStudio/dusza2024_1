@@ -1,5 +1,0 @@
-Allah megidézése
-Béla;Alvás;10;6.0
-Béla;Idézés;Béla és Idézés3123123;0
-Kolbi;Alvás;Kolbi és 12312312Alvás;0
-Kolbi;Idézés;Kolbi és Idézés3123123123;0

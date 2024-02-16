@@ -55,7 +55,7 @@ def fogadas_leadasa():
                     continue
                 break
             while True:
-                kivalasztott_tet = kezelo.NumInput("Válassz egy tétet!: ")
+                kivalasztott_tet = kezelo.Szam_e("Válassz egy tétet!: ")
                 if(kivalasztott_tet>pont):
                     print("Nincs ennyi pontod, amit feltegyél!")
                     continue
@@ -113,7 +113,7 @@ def lekerdezesek():
         print("2- Játék statisztika")
         print("3- Fogadási statisztika")
         print("4- Vissza")
-        user_input = kezelo.NumInput("Válassz: ")
+        user_input = kezelo.Szam_e("Válassz: ")
         if(user_input > 4 or user_input<1):
             continue
         elif(user_input == 1):
@@ -143,7 +143,7 @@ def start():
         print("3- Játék lezárása")
         print("4- Lekérdezések")
         print("5- Kilépés")
-        user_input = kezelo.NumInput("Válassz: ")
+        user_input = kezelo.Szam_e("Válassz: ")
         if(user_input > 5 or user_input<1):
             continue
         elif(user_input == 1):
