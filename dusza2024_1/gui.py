@@ -1,9 +1,10 @@
+#Sigmakik
 import sys
 import kezelo
 
 from PyQt5 import QtGui,QtCore
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QLabel, QApplication, QWidget, QPushButton, QLineEdit, QVBoxLayout,QHBoxLayout,QGridLayout,QMainWindow,QScrollArea,QAbstractScrollArea,QGroupBox
+from PyQt5.QtWidgets import QLabel, QApplication, QWidget, QPushButton, QLineEdit, QVBoxLayout,QHBoxLayout,QGridLayout,QMainWindow,QScrollArea,QAbstractScrollArea,QGroupBox,QComboBox
 
 class MyWindow(QWidget):
     def __init__(self):
@@ -11,26 +12,14 @@ class MyWindow(QWidget):
         self.initUI()
 
     def initUI(self):
-
-        # self.setStyleSheet("background-color: red;") 
         
 
         # Layout létrehozása
         self.mylayout = QGridLayout(self)  
         self.mylayout.setObjectName("container")
-        self.main1= """
-            * {
-                border:10px solid black;
-                background-color: #666666;
-                font-size:30px;
-                
-            }
-        """
+        
         # Layout hozzáadása a main window-hoz
         self.setLayout(self.mylayout)
-        self.setStyleSheet(self.main1)
-        print(self.styleSheet())
-        #self.window().setStyleSheet(main)
         
         self.main()
 
@@ -65,8 +54,14 @@ class MyWindow(QWidget):
         self.koszontes.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.koszontes.setObjectName("greet")
         
-        self.setStyleSheet(self.main1+
+        self.setStyleSheet(
             """
+            * {
+                border:10px solid black;
+                background-color: #666666;
+                font-size:30px;
+                
+            }
             #greet{
                 font-size:100px;
             }
@@ -78,7 +73,22 @@ class MyWindow(QWidget):
         self.mylayout.addWidget(self.regisztraciosGomb,1,1,1,1)
         self.mylayout.addWidget(self.lekerdezesGomb,1,2,1,1)
     def lekerdezes(self):
-        print()
+        self.layoutvisszaallitasa()
+        self.ranglistaGomb=QPushButton("Ranglista",self)
+        self.ranglistaGomb.clicked.connect(self.ranglista)
+        self.mylayout.addWidget(self.ranglistaGomb,0,0,1,1)
+        
+        self.jatekStatisztikaGomb=QPushButton("Játék statisztika",self)
+        self.jatekStatisztikaGomb.clicked.connect(self.jatek_statisztika)
+        self.mylayout.addWidget(self.jatekStatisztikaGomb,0,1,1,1)
+        
+        self.FogadasiStatisztikaGomb=QPushButton("Fogadási statisztika",self)
+        self.FogadasiStatisztikaGomb.clicked.connect(self.fogadasi_statisztika)
+        self.mylayout.addWidget(self.FogadasiStatisztikaGomb,0,2,1,1)
+        
+        self.Vissza=QPushButton("Vissza",self)
+        self.Vissza.clicked.connect(self.main)
+        self.mylayout.addWidget(self.Vissza,1,0,1,3)
     def regisztracios_oldal(self):
         self.layoutvisszaallitasa()
         self.felhasznalonev = QLabel("Add meg a felhasználóneved!", self)
@@ -96,11 +106,23 @@ class MyWindow(QWidget):
         
         self.megerosito_jelszo = QLabel("Add meg újra a jelszavad!", self)
         self.input_megerosito_jelszo = QLineEdit(self)
-        self.input_megerosito_jelszo.textChanged.connect(lambda: kezelo.jelszo_rejtese(self.input_megerosito_jelszo,"Jelszavad újra"))
+        self.input_megerosito_jelszo.textEdited.connect(lambda: kezelo.jelszo_rejtese(self.input_megerosito_jelszo,"Jelszavad újra"))
         self.input_megerosito_jelszo.setPlaceholderText("Jelszavad újra")
+        self.input_megerosito_jelszo.setProperty("canToggle",True)
+        
+        self.errorUzenet=QLabel(self)
+        self.errorUzenet.setMaximumHeight(60)
+        self.keszGomb=QPushButton("Kész",self)
+        def ErrorÜzenetek():
+            valasz = kezelo.benyujtott_regisztracio(self.input_felhasznalonev,self.input_jelszo,self.input_megerosito_jelszo)
+            if not valasz ==True:
+                self.errorUzenet.setText(valasz)
+            else:
+                self.bejelentkezes_oldal()
+        
         
         self.regisztraciosGomb = QPushButton('Regisztráció', self)
-        self.regisztraciosGomb.clicked.connect(lambda: kezelo.benyujtott_regisztracio(self.input_felhasznalonev,self.input_jelszo,self.input_megerosito_jelszo))
+        self.regisztraciosGomb.clicked.connect(ErrorÜzenetek)
         self.Vissza = QPushButton('Vissza', self)
         self.Vissza.clicked.connect(self.main)
         
@@ -111,8 +133,9 @@ class MyWindow(QWidget):
         self.mylayout.addWidget(self.input_jelszo_megjelenitese,1,2,1,1)
         self.mylayout.addWidget(self.megerosito_jelszo,2,0,1,1)
         self.mylayout.addWidget(self.input_megerosito_jelszo,2,1,1,2)
-        self.mylayout.addWidget(self.regisztraciosGomb,3,1,1,2)
-        self.mylayout.addWidget(self.Vissza,3,0,1,1)
+        self.mylayout.addWidget(self.errorUzenet,3,0,1,2)
+        self.mylayout.addWidget(self.regisztraciosGomb,4,1,1,2)
+        self.mylayout.addWidget(self.Vissza,4,0,1,1)
     def bejelentkezes_oldal(self):
         self.layoutvisszaallitasa()
             
@@ -132,15 +155,17 @@ class MyWindow(QWidget):
         self.input_jelszo_megjelenitese.setMaximumWidth(100)
         self.input_jelszo_megjelenitese.clicked.connect(lambda: kezelo.jelszo_megjelenitese(self.input_jelszo,self.input_jelszo_megjelenitese,"Jelszavad"))
         
+        self.errorUzenet=QLabel(self)
+        self.errorUzenet.setMaximumHeight(60)
         self.bejelentkezesGomb = QPushButton('Bejelentkezés', self)
-        def CircularImport():
+        def ErrorUzenet():
             szotar=kezelo.benyujtott_bejelentkezes(self.input_felhasznalonev,self.input_jelszo)
             if szotar["státusz"]==True:
                 felhasznalonev,nev=szotar["válasz"]
-                self.bejelentkezett_oldal(felhasznalonev,nev)
+                self.bejelentkezett_oldal(felhasznalonev)
             else:
-                print(szotar["válasz"])#TODO: ERROR
-        self.bejelentkezesGomb.clicked.connect(CircularImport)
+                self.errorUzenet.setText(szotar["válasz"])
+        self.bejelentkezesGomb.clicked.connect(ErrorUzenet)
         self.Vissza = QPushButton('Vissza', self)
         self.Vissza.clicked.connect(self.main)
         
@@ -149,27 +174,46 @@ class MyWindow(QWidget):
         self.mylayout.addWidget(self.jelszo,1,0,1,1)
         self.mylayout.addWidget(self.input_jelszo,1,1,1,2)
         self.mylayout.addWidget(self.input_jelszo_megjelenitese,1,2,1,1)
-        self.mylayout.addWidget(self.bejelentkezesGomb,2,1,1,2)
-        self.mylayout.addWidget(self.Vissza,2,0,1,1)
+        self.mylayout.addWidget(self.errorUzenet,2,0,1,2)
+        self.mylayout.addWidget(self.bejelentkezesGomb,3,1,1,2)
+        self.mylayout.addWidget(self.Vissza,3,0,1,1)
     def layoutvisszaallitasa(self):
-        self.resizeLogin=False
+        self.mainCSS= """
+            * {
+                border:10px solid black;
+                background-color: #666666;
+                font-size:30px;
+                
+            }
+        """
+        self.setStyleSheet(self.mainCSS)
         for i in reversed(range(self.mylayout.count())): 
             self.mylayout.itemAt(i).widget().deleteLater()
-    def mindig_latszik_belepve(self, felhasznalonev:str,nev:str):
+    def mindig_latszik_belepve(self, felhasznalonev:str):
+        nev=kezelo.felhasznalo_neve(felhasznalonev)
         pont=kezelo.dinamikusPontSzamolás(felhasznalonev)
         self.pont = QLabel(f"Pontod: {pont}\nFelhasználó Neved: {felhasznalonev}\nMegjelenített Neved: {nev}", self)
         self.mylayout.addWidget(self.pont,0,0,1,1)
-    def fogado_oldal(self,felhasznalonev:str,nev:str):
+        return nev
+    def fogado_oldal(self,felhasznalonev:str):
         self.layoutvisszaallitasa()
-        self.mindig_latszik_belepve(felhasznalonev,nev)
+        self.mindig_latszik_belepve(felhasznalonev)
         
-        self.elerheto_jatekok = QLabel("Le nem zárt játékok:", self)
-        self.elerheto_jatekok.setStyleSheet("color:black")
-        self.elerheto_jatekok.setMaximumHeight(100)
+    
+        self.osszesJatekTarolo=QScrollArea(self)
+        self.osszesJatekTarolo.setWidgetResizable(True)
+        self.osszesJatekTarolo.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+        self.osszesJatekTarolo.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.osszesJatek=QVBoxLayout(self.osszesJatekTarolo)
+        self.osszesJatekBox = QGroupBox()
+        self.osszesJatekBox.setLayout(self.osszesJatek)
+        self.osszesJatekTarolo.setWidget(self.osszesJatekBox)
         
-        self.mylayout.addWidget(self.elerheto_jatekok,1,0,1,2)
-        jatekok=kezelo.le_van_e_zarva_osszes_jatekot_vissza_adja()
-        for id,jatek in enumerate(jatekok):
+        self.mylayout.addWidget(self.osszesJatekTarolo,2,0,1,1)
+        self.elerheto_jatekok = QLabel("Le nem zárt játékok:",self.osszesJatekTarolo)
+        self.osszesJatek.addWidget(self.elerheto_jatekok)
+    
+        for jatek in kezelo.le_van_e_zarva_osszes_jatekot_vissza_adja():
             
             substring1=[", "]*len(jatek["alanyok"])
             substring2=[", "]*len(jatek["esemenyek"])
@@ -184,51 +228,68 @@ class MyWindow(QWidget):
             alanyok="".join(map(str,map(lambda x,y: orulet(x,y,0),jatek["alanyok"],substrings[0])))
             esemenyek="".join(map(str,map(lambda x,y: orulet(x,y,1),jatek["esemenyek"],substrings[1])))
             #Hozzáadom az alanyokhoz az egyes alanyt és egy vesszőt, az utolsó elemnél a vesszőt mindig elhagyom és ezt megcsinálom az eseményekkel is
-            self.jatek_neve = QLabel(f"{jatek['jatek_neve']}\nAlanyok:{alanyok}\nEsemények:{esemenyek}", self)
-            self.fogadasGomb = QPushButton('Fogadás', self)
-            self.fogadasGomb.clicked.connect(lambda: self.fogadas(jatek))
-            sor=id%2
-            oszlop=int(id/2)
-            if id/2!=round(id/2):
-                oszlop=int(round(id/2)-1)
-            self.mylayout.addWidget(self.jatek_neve,2+sor,0+oszlop,1,1)
-            self.mylayout.addWidget(self.fogadasGomb,3+sor,0+oszlop,1,1)
-        
+            self.jatek_neve = QLabel(f"{jatek['jatek_neve']}\n{alanyok}\n{esemenyek}\n", self.osszesJatekTarolo)
+            self.jatek_neve.setMaximumHeight(180)
+            self.fogadasGomb = QPushButton('Fogadás', self.osszesJatekTarolo)
+            self.fogadasGomb.clicked.connect(lambda: self.fogadas_leadasa(jatek,felhasznalonev))
+            self.osszesJatek.addWidget(self.jatek_neve)
+            self.osszesJatek.addWidget(self.fogadasGomb)
         
         self.Vissza = QPushButton('Vissza', self)
-        self.Vissza.clicked.connect(lambda: self.bejelentkezett_oldal(felhasznalonev,nev))
+        self.Vissza.clicked.connect(lambda: self.bejelentkezett_oldal(felhasznalonev))
         self.mylayout.addWidget(self.Vissza)
-    def szervezo_oldal(self,felhasznalonev:str,nev:str):
+    def szervezo_oldal(self,felhasznalonev:str):
         self.layoutvisszaallitasa()
-        self.mindig_latszik_belepve(felhasznalonev,nev)
+        self.mindig_latszik_belepve(felhasznalonev)
         
         self.jatek_letrehozas = QPushButton('Játék létrehozása', self)
-        self.jatek_letrehozas.clicked.connect(lambda: self.jatek_letrehozasa(felhasznalonev,nev))
-        self.mylayout.addWidget(self.jatek_letrehozas,1,0,1,1)
+        self.jatek_letrehozas.clicked.connect(lambda: self.jatek_letrehozasa(felhasznalonev))
+        self.mylayout.addWidget(self.jatek_letrehozas,1,1,1,1)
+          
+        self.osszesJatekTarolo=QScrollArea(self)
+        self.osszesJatekTarolo.setWidgetResizable(True)
+        self.osszesJatekTarolo.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+        self.osszesJatekTarolo.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.osszesJatek=QVBoxLayout(self.osszesJatekTarolo)
+        self.osszesJatekBox = QGroupBox()
+        self.osszesJatekBox.setLayout(self.osszesJatek)
+        self.osszesJatekTarolo.setWidget(self.osszesJatekBox)
         
-        
-        self.elerheto_jatekok = QLabel("Le nem zárt játékaid:", self)
-        self.elerheto_jatekok.setStyleSheet("color:red")
-        
-        
-        self.mylayout.addWidget(self.elerheto_jatekok,2,0,1,1)
+        self.mylayout.addWidget(self.osszesJatekTarolo,2,0,1,1)
+        self.elerheto_jatekok = QLabel("Le nem zárt játékaid:",self.osszesJatekTarolo)
+        self.osszesJatek.addWidget(self.elerheto_jatekok)
         for jatek in map(lambda x: kezelo.jatekot_felhasznalo_szervezte(x,felhasznalonev), kezelo.le_van_e_zarva_osszes_jatekot_vissza_adja()):
             if jatek == None:
                 continue
-            self.jatek_neve = QLabel(f"{jatek['jatek_neve']}\n{jatek['alanyok']}\n{(jatek['esemenyek'])}\n", self)
-            self.lezarasGomb = QPushButton('Játék lezárása', self)
-            self.lezarasGomb.clicked.connect(lambda: self.lezaras(jatek,felhasznalonev,nev))
-            self.mylayout.addWidget(self.jatek_neve)
-            self.mylayout.addWidget(self.lezarasGomb)
-        print("asdasdsd")
-        #for i in map(isUsersGame,kezelo.le_van_e_zarva_osszes_jatekot_vissza_adja())
+            
+            substring1=[", "]*len(jatek["alanyok"])
+            substring2=[", "]*len(jatek["esemenyek"])
+            substrings=[substring1,substring2]
+            self.current=0
+            def orulet(x,y,melyik):
+                self.current+=1
+                if self.current==len(substrings[melyik]):
+                    self.current=0
+                    return x
+                return x+y
+            alanyok="".join(map(str,map(lambda x,y: orulet(x,y,0),jatek["alanyok"],substrings[0])))
+            esemenyek="".join(map(str,map(lambda x,y: orulet(x,y,1),jatek["esemenyek"],substrings[1])))
+            #Hozzáadom az alanyokhoz az egyes alanyt és egy vesszőt, az utolsó elemnél a vesszőt mindig elhagyom és ezt megcsinálom az eseményekkel is
+            
+            self.jatek_neve = QLabel(f"{jatek['jatek_neve']}\n{alanyok}\n{esemenyek}\n", self.osszesJatekTarolo)
+            self.jatek_neve.setMaximumHeight(180)
+            self.lezarasGomb = QPushButton('Játék lezárása', self.osszesJatekTarolo)
+            self.lezarasGomb.clicked.connect(lambda: self.lezaras(jatek,felhasznalonev))
+            self.osszesJatek.addWidget(self.jatek_neve)
+            self.osszesJatek.addWidget(self.lezarasGomb)
+        
         
         self.Vissza = QPushButton('Vissza', self)
-        self.Vissza.clicked.connect(lambda: self.bejelentkezett_oldal(felhasznalonev,nev))
-        self.mylayout.addWidget(self.Vissza)
-    def jatek_letrehozasa(self,felhasznalonev:str,nev:str):
+        self.Vissza.clicked.connect(lambda: self.bejelentkezett_oldal(felhasznalonev))
+        self.mylayout.addWidget(self.Vissza,3,1,1,1)
+    def jatek_letrehozasa(self,felhasznalonev:str):
         self.layoutvisszaallitasa()
-        self.mindig_latszik_belepve(felhasznalonev,nev)
+        self.mindig_latszik_belepve(felhasznalonev)
         
         self.megnevezes = QLabel("Mi a játék megnevezése? (egyedinek kell lennie) ",self)
         
@@ -237,20 +298,27 @@ class MyWindow(QWidget):
         self.alanyok_label = QLabel("Kik az alanyok? (különböznek egymástól)",self)
         self.esemenyek_label = QLabel("Mik az események? (különböznek egymástól)",self)
         self.mylayout.addWidget(self.megnevezes,1,0,1,1)
+        self.mylayout.addWidget(self.megnevezes_input,1,1,1,1)
 
         alap_alanyok_szama=2
         alap_esemenyek_szama=2
         
+        
+        
+        
+        
+        
+        
+        
         self.osszesAlanyTarolo=QScrollArea(self)
         self.osszesAlanyTarolo.setWidgetResizable(True)
-        self.osszesAlanyTarolo.setFixedHeight(200)
         self.osszesAlanyTarolo.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         self.osszesAlanyTarolo.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.osszesEsemenyTarolo=QScrollArea(self)
         self.osszesEsemenyTarolo.setWidgetResizable(True)
-        self.osszesEsemenyTarolo.setFixedHeight(200)
         self.osszesEsemenyTarolo.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         self.osszesEsemenyTarolo.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        
         self.osszesAlany=QGridLayout(self.osszesAlanyTarolo)
         self.osszesEsemeny = QGridLayout(self.osszesEsemenyTarolo)
         
@@ -263,31 +331,41 @@ class MyWindow(QWidget):
         self.osszesEsemenyTarolo.setWidget(self.osszesEsemenyBox)
 
         self.alanyok_plusz=QPushButton("+",self)
+        self.alanyok_plusz.setMaximumWidth(100)
         self.esemenyek_plusz=QPushButton("+",self)
+        self.esemenyek_plusz.setMaximumWidth(100)
         self.alanyok_plusz.clicked.connect(lambda: kezelo.plusAlanyokésEsemenyek(1,0,self.osszesAlany,self.osszesEsemeny,self.osszesAlanyBox,self.osszesEsemenyBox))
         self.esemenyek_plusz.clicked.connect(lambda: kezelo.plusAlanyokésEsemenyek(0,1,self.osszesAlany,self.osszesEsemeny,self.osszesAlanyBox,self.osszesEsemenyBox))
         self.mylayout.addWidget(self.alanyok_label,2,0,1,1)
-        self.mylayout.addWidget(self.alanyok_plusz,2,1,1,1)
-        self.mylayout.addWidget(self.osszesAlanyTarolo,3,0,1,1)
+        self.mylayout.addWidget(self.alanyok_plusz,2,1,1,1,QtCore.Qt.AlignmentFlag.AlignRight)
+        self.mylayout.addWidget(self.osszesAlanyTarolo,3,0,1,2)
         kezelo.plusAlanyokésEsemenyek(alap_alanyok_szama,0,self.osszesAlany,self.osszesEsemeny,self.osszesAlanyBox,self.osszesEsemenyBox)
         self.mylayout.addWidget(self.esemenyek_label,4,0,1,1)
-        self.mylayout.addWidget(self.esemenyek_plusz,4,1,1,1)
-        self.mylayout.addWidget(self.osszesEsemenyTarolo,5,0,1,1)
+        self.mylayout.addWidget(self.esemenyek_plusz,4,1,1,1,QtCore.Qt.AlignmentFlag.AlignRight)
+        self.mylayout.addWidget(self.osszesEsemenyTarolo,5,0,1,2)
         kezelo.plusAlanyokésEsemenyek(0,alap_esemenyek_szama,self.osszesAlany,self.osszesEsemeny,self.osszesAlanyBox,self.osszesEsemenyBox)
         
+        self.errorUzenet=QLabel(self)
+        self.errorUzenet.setMaximumHeight(60)
+        self.mylayout.addWidget(self.errorUzenet,6,0,1,2)
+        
         self.keszGomb=QPushButton("Kész",self)
-        self.keszGomb.clicked.connect(lambda: kezelo.benyujtott_jatek_letrehozasa(felhasznalonev,self.megnevezes_input,self.osszesAlanyBox,self.osszesEsemenyBox))
+        def ErrorÜzenetek():
+            valasz = kezelo.benyujtott_jatek_letrehozasa(felhasznalonev,self.megnevezes_input,self.osszesAlanyBox,self.osszesEsemenyBox)
+            if not valasz ==True:
+                self.errorUzenet.setText(valasz) #Error üzenet
+        self.keszGomb.clicked.connect(ErrorÜzenetek)
         
         
         
         
-        self.mylayout.addWidget(self.keszGomb,6,0,1,1)
+        self.mylayout.addWidget(self.keszGomb,7,0,1,1)
         self.Vissza=QPushButton("Vissza",self)
-        self.Vissza.clicked.connect(lambda: self.szervezo_oldal(felhasznalonev,nev))
-        self.mylayout.addWidget(self.Vissza,6,1,1,1)
-    def lezaras(self,jatek,felhasznalonev,nev):
+        self.Vissza.clicked.connect(lambda: self.szervezo_oldal(felhasznalonev))
+        self.mylayout.addWidget(self.Vissza,7,1,1,1)
+    def lezaras(self,jatek,felhasznalonev:str):
         self.layoutvisszaallitasa()
-        self.mindig_latszik_belepve(felhasznalonev,nev)
+        self.mindig_latszik_belepve(felhasznalonev)
         self.alanyok_es_esemyenek_uzenetek=[]
         for alany in jatek['alanyok']:
             for esemeny in jatek['esemenyek']: 
@@ -303,35 +381,37 @@ class MyWindow(QWidget):
             kezelo.benyujtott_eredmeny(jatek,self.alanyok_es_esemyenek_uzenetek)
             self.uzenet= QLabel(f"{jatek['jatek_neve']} lezárva!",self)
             self.mylayout.addWidget(self.uzenet)
-            self.szervezo_oldal(felhasznalonev,nev)
+            self.szervezo_oldal(felhasznalonev)
         self.keszGomb.clicked.connect(CircularImport)
 
         self.mylayout.addWidget(self.keszGomb)
         self.Vissza = QPushButton("Vissza",self)
-        self.Vissza.clicked.connect(lambda: self.szervezo_oldal(felhasznalonev,nev))
+        self.Vissza.clicked.connect(lambda: self.szervezo_oldal(felhasznalonev))
         self.mylayout.addWidget(self.Vissza)
-    def fogadas(self,jatek):
-        print(f"{jatek} fogadva!")
-    def bejelentkezett_oldal(self,felhasznalonev:str,nev:str):
+    def bejelentkezett_oldal(self,felhasznalonev:str):
         self.layoutvisszaallitasa()
-        self.mindig_latszik_belepve(felhasznalonev,nev)
+        self.mindig_latszik_belepve(felhasznalonev)
+        
+        self.beallitasok=QPushButton("⚙️",self)
+        self.beallitasok.clicked.connect(lambda: self.profil_beallitasok(felhasznalonev))
+        self.mylayout.addWidget(self.beallitasok,0,1,1,1)
         
         self.szerepkor = QLabel(f"Válaszd ki a szerepköröd!", self)
         self.szerepkor.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         
         self.szervezo = QPushButton('Szervező', self)
-        self.szervezo.clicked.connect(lambda: self.szervezo_oldal(felhasznalonev,nev))
+        self.szervezo.clicked.connect(lambda: self.szervezo_oldal(felhasznalonev))
         self.szervezo.setObjectName("szervezo")
         
         self.fogado = QPushButton('Fogadó', self)
-        self.fogado.clicked.connect(lambda: self.fogado_oldal(felhasznalonev,nev))
+        self.fogado.clicked.connect(lambda: self.fogado_oldal(felhasznalonev))
         self.fogado.setObjectName("fogado")
         
         self.Vissza = QPushButton('Vissza a menübe', self)
         self.Vissza.clicked.connect(self.main)
         
         
-        self.setStyleSheet(self.main1+
+        self.setStyleSheet(self.mainCSS+
         """
         #fogado,#szervezo{
             height:300px;
@@ -343,6 +423,157 @@ class MyWindow(QWidget):
         self.mylayout.addWidget(self.szervezo,2,0,1,1)
         self.mylayout.addWidget(self.fogado,2,1,1,1)
         self.mylayout.addWidget(self.Vissza,3,0,1,2)
+    def fogadas_leadasa(self,jatek:dict,felhasznalonev:str):
+        self.layoutvisszaallitasa()
+        self.mindig_latszik_belepve(felhasznalonev)
+        
+        self.kivalasztott_jatek_neve=QLabel(f"{jatek['jatek_neve']}-hoz való fogadás:",self)
+        self.mylayout.addWidget(self.kivalasztott_jatek_neve,1,0,1,2)
+        
+        self.kivalasztott_alany=QLabel("Kiválasztandó alany:",self)
+        self.kivalasztott_alany_input=QComboBox(self)
+        self.kivalasztott_alany_input.addItems(jatek["alanyok"])
+        self.mylayout.addWidget(self.kivalasztott_alany,2,0,1,1)
+        self.mylayout.addWidget(self.kivalasztott_alany_input,2,1,1,1)
+        
+        self.kivalasztott_esemeny=QLabel("Kiválasztandó esemény:",self)
+        self.kivalasztott_esemeny_input=QComboBox(self)
+        self.kivalasztott_esemeny_input.addItems(jatek["esemenyek"])
+        self.mylayout.addWidget(self.kivalasztott_esemeny,3,0,1,1)
+        self.mylayout.addWidget(self.kivalasztott_esemeny_input,3,1,1,1)
+        
+        self.ertek=QLabel("Válassz egy értéket!",self)
+        self.ertek_input=QLineEdit(self)
+        self.ertek_input.setPlaceholderText("érték")
+        self.mylayout.addWidget(self.ertek,4,0,1,1)
+        self.mylayout.addWidget(self.ertek_input,4,1,1,1)
+        
+        self.tet=QLabel("Válassz egy tétet!",self)
+        self.tet_input=QLineEdit(self)
+        self.tet_input.setPlaceholderText("tét")
+        self.mylayout.addWidget(self.tet,5,0,1,1)
+        self.mylayout.addWidget(self.tet_input,5,1,1,1)
+        
+        self.errorUzenet=QLabel(self)
+        self.mylayout.addWidget(self.errorUzenet,6,0,1,2)
+        
+        def ErrorÜzenetek():
+            valasz = kezelo.benyujtott_fogadas(felhasznalonev,jatek,self.kivalasztott_alany_input,self.kivalasztott_esemeny_input,self.ertek_input,self.tet_input)
+            if not valasz == True:
+                self.errorUzenet.setText(valasz)
+            else:
+                self.fogado_oldal(felhasznalonev)
+        
+        self.fogadasGomb=QPushButton("Fogadás leadása!",self)
+        self.fogadasGomb.clicked.connect(ErrorÜzenetek)
+        self.mylayout.addWidget(self.fogadasGomb,7,1,1,1)
+        
+        self.Vissza=QPushButton("Vissza",self)
+        self.Vissza.clicked.connect(lambda: self.fogado_oldal(felhasznalonev))
+        self.mylayout.addWidget(self.Vissza,7,0,1,1)
+    def ranglista(self):
+        self.layoutvisszaallitasa()
+        
+        self.osszesJatekosTarolo=QScrollArea(self)
+        self.osszesJatekosTarolo.setWidgetResizable(True)
+        self.osszesJatekosTarolo.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+        self.osszesJatekosTarolo.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.osszesJatekos=QVBoxLayout(self.osszesJatekosTarolo)
+        self.osszesJatekosBox = QGroupBox()
+        self.osszesJatekosBox.setLayout(self.osszesJatekos)
+        self.osszesJatekosTarolo.setWidget(self.osszesJatekosBox)
+        
+        self.mylayout.addWidget(self.osszesJatekosTarolo,1,0,1,1)
+        self.jatekosok_label = QLabel("Összes játékos:",self.osszesJatekosTarolo)
+        self.jatekosok_label.setMaximumHeight(100)
+        self.osszesJatekos.addWidget(self.jatekosok_label)
+        
+        jatekosok=kezelo.ranglista_guihoz()
+        for id,jatekos in enumerate(jatekosok["nev_sorrendben"]):
+            self.jatekos_label = QLabel(f"{jatekosok['igazi_helyezes'][id]}. helyen: {jatekos}, {jatekosok['pontszam_sorrendben'][id]} ponttal",self.osszesJatekosTarolo)
+            self.jatekos_label.setMaximumHeight(100)
+            self.osszesJatekos.addWidget(self.jatekos_label)
+        self.Vissza=QPushButton("Vissza",self)
+        self.Vissza.clicked.connect(self.lekerdezes)
+        self.mylayout.addWidget(self.Vissza,2,0,1,1)
+    def jatek_statisztika(self):
+        self.layoutvisszaallitasa()
+        
+        self.osszesJatekTarolo=QScrollArea(self)
+        self.osszesJatekTarolo.setWidgetResizable(True)
+        self.osszesJatekTarolo.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+        self.osszesJatekTarolo.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.osszesJatek=QVBoxLayout(self.osszesJatekTarolo)
+        self.osszesJatekBox = QGroupBox()
+        self.osszesJatekBox.setLayout(self.osszesJatek)
+        self.osszesJatekTarolo.setWidget(self.osszesJatekBox)
+        
+        self.mylayout.addWidget(self.osszesJatekTarolo,1,0,1,1)
+        self.jatekok_label = QLabel("Összes játék:",self.osszesJatekTarolo)
+        self.jatekok_label.setMaximumHeight(100)
+        self.osszesJatek.addWidget(self.jatekok_label)
+        
+        jatekok = kezelo.jatek_statisztika_guihoz()
+        for jatek in jatekok:
+            self.jatek_label = QLabel(f"{jatek['jatek_neve']}-ban/-ben\n{jatek['fogadasok_szama']}db fogadása van\n{jatek['nyeremenyek_osszpontszama']} összpontszáma van a nyereményeknek a játékhoz",self.osszesJatekTarolo)
+            self.jatek_label.setMaximumHeight(200)
+            self.osszesJatek.addWidget(self.jatek_label)
+        self.Vissza=QPushButton("Vissza",self)
+        self.Vissza.clicked.connect(self.lekerdezes)
+        self.mylayout.addWidget(self.Vissza,2,0,1,1)
+    def fogadasi_statisztika(self):
+        self.layoutvisszaallitasa()
+        
+        self.kivalasztott_jatek=QComboBox(self)
+        self.kivalasztott_jatek.addItems(kezelo.osszesJatek())
+        self.kivalasztott_jatek.currentIndexChanged.connect(lambda:kezelo.fogadasiStatisztikaKivalasztottjatekInputahoz(self.kivalasztott_jatek,self.osszesAlanyEsemeny,self.osszesAlanyEsemenyTarolo))
+        self.mylayout.addWidget(self.kivalasztott_jatek,0,0,1,1)
+        
+        self.osszesAlanyEsemenyTarolo=QScrollArea(self)
+        self.osszesAlanyEsemenyTarolo.setWidgetResizable(True)
+        self.osszesAlanyEsemenyTarolo.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+        self.osszesAlanyEsemenyTarolo.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.osszesAlanyEsemeny=QVBoxLayout(self.osszesAlanyEsemenyTarolo)
+        self.osszesAlanyEsemenyBox = QGroupBox()
+        self.osszesAlanyEsemenyBox.setLayout(self.osszesAlanyEsemeny)
+        self.osszesAlanyEsemenyTarolo.setWidget(self.osszesAlanyEsemenyBox)
+        
+        self.mylayout.addWidget(self.osszesAlanyEsemenyTarolo,1,0,1,1)
+        self.alanyEsemeny_label = QLabel("Összes alany és esemény:",self.osszesAlanyEsemenyTarolo)
+        self.alanyEsemeny_label.setMaximumHeight(100)
+        self.osszesAlanyEsemeny.addWidget(self.alanyEsemeny_label)
+        
+        self.Vissza=QPushButton("Vissza",self)
+        self.Vissza.clicked.connect(self.lekerdezes)
+        self.mylayout.addWidget(self.Vissza,2,0,1,1)
+    def profil_beallitasok(self,felhasznalonev:str):
+        self.layoutvisszaallitasa()
+        nev = self.mindig_latszik_belepve(felhasznalonev)
+        
+        self.megjelenitett_nev_label=QLabel("Megjelenített neved megváltoztatása:",self)
+        self.mylayout.addWidget(self.megjelenitett_nev_label,1,0,1,1)
+        
+        self.megjelenitett_nev_input=QLineEdit(nev,self)
+        self.megjelenitett_nev_input.setPlaceholderText("megjelenitett nev")
+        self.mylayout.addWidget(self.megjelenitett_nev_input,1,1,1,1)
+        
+        self.errorUzenet=QLabel(self)
+        self.errorUzenet.setMaximumHeight(60)
+        self.mylayout.addWidget(self.errorUzenet,2,0,1,2)
+        
+        def ErrorÜzenetek():
+            valasz = kezelo.benyujtott_profilbeallitasok(felhasznalonev,self.megjelenitett_nev_input)
+            if not valasz == True:
+                self.errorUzenet.setText()
+            else:
+                self.bejelentkezett_oldal(felhasznalonev)
+        self.mentes=QPushButton("Mentés",self)
+        self.mentes.clicked.connect(ErrorÜzenetek)
+        self.mylayout.addWidget(self.mentes,3,1,1,1)
+        
+        self.Vissza=QPushButton("Vissza",self)
+        self.Vissza.clicked.connect(lambda: self.bejelentkezett_oldal(felhasznalonev))
+        self.mylayout.addWidget(self.Vissza,3,0,1,1)
     def resizeEvent(self, event):
         print("Window has been resized")
         QWidget.resizeEvent(self, event)
@@ -354,4 +585,4 @@ if __name__ == '__main__':
     
     
     sys.exit(app.exec_())
-#TODO: lekérdezések, fogadás leadása
+#TODO: design, ppt, dinamikus szorzó, egyéb ötletek
