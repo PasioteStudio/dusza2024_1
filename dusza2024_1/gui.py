@@ -8,6 +8,36 @@ from PyQt5.QtWidgets import QLabel, QApplication, QWidget, QPushButton, QLineEdi
 
 class MyWindow(QWidget):
     def __init__(self):
+        self.foCSS="""
+            * {
+                border:10px solid black;
+                background-color: #666666;
+                font-size:30px;
+                border-radius:25px
+            }
+            #greet{
+                font-size:100px;
+            }
+            #noBorder{
+                border:none !important
+            }
+            #profilhatter{
+                background-color:gold !important;
+                
+            }
+            #profil_felhasznalonev, #profil_nev,#profil_pontszam,#ures{
+                color:black;
+                font-size:35px;
+                border:none;
+                background:none;
+                margin-left: 50px;
+            }
+            #profil_kep{
+                background: url('icon.jpg') no-repeat contain;
+                border: 1px solid black;
+                border-radius:150px !important;
+            }
+        """
         super().__init__()
         self.initUI()
 
@@ -22,7 +52,7 @@ class MyWindow(QWidget):
         self.setLayout(self.mylayout)
         
         self.main()
-
+        
 
         # Képernyő méretei és pozíciója
         #self.mylayout.deleteLater()
@@ -38,6 +68,7 @@ class MyWindow(QWidget):
         icon_path="icon.jpg"
         self.setWindowIcon(QtGui.QIcon(icon_path))
         self.showMaximized() 
+    
     def main(self):
         self.layoutvisszaallitasa()
         # CreateGomb létrehozása
@@ -54,19 +85,8 @@ class MyWindow(QWidget):
         self.koszontes.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.koszontes.setObjectName("greet")
         
-        self.setStyleSheet(
-            """
-            * {
-                border:10px solid black;
-                background-color: #666666;
-                font-size:30px;
-                
-            }
-            #greet{
-                font-size:100px;
-            }
-            """
-        )
+        
+        self.setStyleSheet(self.foCSS)
         
         self.mylayout.addWidget(self.koszontes,0,0,1,3,QtCore.Qt.AlignmentFlag.AlignCenter)
         self.mylayout.addWidget(self.bejelentkezesGomb,1,0,1,1)
@@ -91,27 +111,69 @@ class MyWindow(QWidget):
         self.mylayout.addWidget(self.Vissza,1,0,1,3)
     def regisztracios_oldal(self):
         self.layoutvisszaallitasa()
-        self.felhasznalonev = QLabel("Add meg a felhasználóneved!", self)
+        self.setStyleSheet(self.foCSS+"""
+                           #cim{
+                               font-size:100px;
+                                color:white;
+                                padding-left: 100px;
+                                padding-right:100px;
+                                background-color:black;
+                                border-radius:50px;
+                                height:min-content
+                           }
+                           #felhasznalonev,#jelszo,#megerosito_jelszo,#error{
+                                color:gold;
+                                background-color:black;
+                                font-weight:bold;
+                                margin: 15px 0;
+                                margin-left:100px;
+                                font-size:35px;
+                           }
+                           #error{
+                               margin:0 0 0 100px;
+                           }
+                           #jelszo_megjelenitese{
+                               background-color:black
+                           }
+                           #regisztracioGomb{
+                                color:gold;
+                                background-color:black;
+                                font-weight:bold;
+                                font-size:75px;
+                                padding: 10px 70px;
+                           }
+                           #vissza{
+                                border:none;
+                                color:black;
+                                text-decoration: underline;
+                           }
+                           """)
+        self.oldalCim=QLabel("Regisztráció",self)
+        self.oldalCim.setObjectName("cim")
+        
         self.input_felhasznalonev = QLineEdit(self)
         self.input_felhasznalonev.setPlaceholderText("Felhasználó neved")
+        self.input_felhasznalonev.setObjectName("felhasznalonev")
         
-        self.jelszo = QLabel("Add meg a jelszavad!", self)
         self.input_jelszo = QLineEdit(self)
+        self.input_jelszo.setObjectName("jelszo")
         self.input_jelszo.textEdited.connect(lambda: kezelo.jelszo_rejtese(self.input_jelszo,"Jelszavad"))
         self.input_jelszo.setPlaceholderText("Jelszavad")
         self.input_jelszo.setProperty("canToggle",True)
         self.input_jelszo_megjelenitese = QPushButton('😃', self)
         self.input_jelszo_megjelenitese.setProperty("toggle","😄")
         self.input_jelszo_megjelenitese.clicked.connect(lambda: kezelo.jelszo_megjelenitese(self.input_jelszo,self.input_jelszo_megjelenitese,"Jelszavad"))
+        self.input_jelszo_megjelenitese.setObjectName("jelszo_megjelenitese")
         
-        self.megerosito_jelszo = QLabel("Add meg újra a jelszavad!", self)
         self.input_megerosito_jelszo = QLineEdit(self)
         self.input_megerosito_jelszo.textEdited.connect(lambda: kezelo.jelszo_rejtese(self.input_megerosito_jelszo,"Jelszavad újra"))
         self.input_megerosito_jelszo.setPlaceholderText("Jelszavad újra")
         self.input_megerosito_jelszo.setProperty("canToggle",True)
+        self.input_megerosito_jelszo.setObjectName("megerosito_jelszo")
         
         self.errorUzenet=QLabel(self)
         self.errorUzenet.setMaximumHeight(60)
+        self.errorUzenet.setObjectName("error")
         self.keszGomb=QPushButton("Kész",self)
         def ErrorÜzenetek():
             valasz = kezelo.benyujtott_regisztracio(self.input_felhasznalonev,self.input_jelszo,self.input_megerosito_jelszo)
@@ -123,40 +185,88 @@ class MyWindow(QWidget):
         
         self.regisztraciosGomb = QPushButton('Regisztráció', self)
         self.regisztraciosGomb.clicked.connect(ErrorÜzenetek)
-        self.Vissza = QPushButton('Vissza', self)
+        self.regisztraciosGomb.setObjectName("regisztracioGomb")
+        self.Vissza = QPushButton('Vissza a főoldalra', self)
         self.Vissza.clicked.connect(self.main)
+        self.Vissza.setObjectName("vissza")
         
-        self.mylayout.addWidget(self.felhasznalonev,0,0,1,1)
-        self.mylayout.addWidget(self.input_felhasznalonev,0,1,1,2)
-        self.mylayout.addWidget(self.jelszo,1,0,1,1)
-        self.mylayout.addWidget(self.input_jelszo,1,1,1,2)
-        self.mylayout.addWidget(self.input_jelszo_megjelenitese,1,2,1,1)
-        self.mylayout.addWidget(self.megerosito_jelszo,2,0,1,1)
-        self.mylayout.addWidget(self.input_megerosito_jelszo,2,1,1,2)
-        self.mylayout.addWidget(self.errorUzenet,3,0,1,2)
-        self.mylayout.addWidget(self.regisztraciosGomb,4,1,1,2)
-        self.mylayout.addWidget(self.Vissza,4,0,1,1)
+        self.ures=QWidget(self)
+        self.ures.setObjectName("noBorder")
+        self.resizeWidgets.append({
+            "elem":self.ures,
+            "mive":0
+        })
+        self.ures.setFixedWidth(int(self.frameGeometry().size().width()/2))
+        self.mylayout.addWidget(self.oldalCim,0,0,1,2,QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignTop)
+        self.mylayout.addWidget(self.input_felhasznalonev,1,0,1,1)
+        self.mylayout.addWidget(self.input_jelszo,2,0,1,1)
+        self.mylayout.addWidget(self.input_jelszo_megjelenitese,2,0,1,1,QtCore.Qt.AlignmentFlag.AlignRight)
+        self.mylayout.addWidget(self.input_megerosito_jelszo,3,0,1,1)
+        self.mylayout.addWidget(self.errorUzenet,4,0,1,1)
+        self.mylayout.addWidget(self.ures,1,1,4,1)
+        self.mylayout.addWidget(self.regisztraciosGomb,5,0,1,2,QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignBottom)
+        self.mylayout.addWidget(self.Vissza,6,0,1,2,QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignBottom)
     def bejelentkezes_oldal(self):
         self.layoutvisszaallitasa()
-            
+        self.setStyleSheet(self.foCSS+"""
+                    #cim{
+                        font-size:100px;
+                        color:white;
+                        padding-left: 100px;
+                        padding-right:100px;
+                        background-color:black;
+                        border-radius:50px;
+                        height:min-content
+                    }
+                    #felhasznalonev,#jelszo,#megerosito_jelszo,#error{
+                        color:gold;
+                        background-color:black;
+                        font-weight:bold;
+                        margin: 15px 0;
+                        margin-left:100px;
+                        font-size:35px;
+                    }
+                    #error{
+                        margin:0 0 0 100px;
+                    }
+                    #jelszo_megjelenitese{
+                        background-color:black
+                    }
+                    #regisztracioGomb{
+                        color:gold;
+                        background-color:black;
+                        font-weight:bold;
+                        font-size:75px;
+                        padding: 10px 70px;
+                    }
+                    #vissza{
+                        border:none;
+                        color:black;
+                        text-decoration: underline;
+                    }
+                    """)
         # Bemeneti mező létrehozása
-        self.felhasznalonev = QLabel("Add meg a felhasználóneved!", self)
+        self.oldalCim=QLabel("Bejelentkezés")
+        self.oldalCim.setObjectName("cim")
+        
         self.input_felhasznalonev = QLineEdit(self)
         self.input_felhasznalonev.setPlaceholderText("Felhasználó neved")
+        self.input_felhasznalonev.setObjectName("felhasznalonev")
         
-        self.jelszo = QLabel("Add meg a jelszavad!", self)
         self.input_jelszo = QLineEdit(self)
         self.input_jelszo.setPlaceholderText("Jelszavad")
+        self.input_jelszo.setObjectName("jelszo")
         self.input_jelszo.textEdited.connect(lambda: kezelo.jelszo_rejtese(self.input_jelszo,"Jelszavad"))
         self.input_jelszo.setProperty("canToggle",True)
-        self.input_jelszo.setFixedWidth(1000)
         self.input_jelszo_megjelenitese = QPushButton('😃', self)
         self.input_jelszo_megjelenitese.setProperty("toggle","😄")
         self.input_jelszo_megjelenitese.setMaximumWidth(100)
+        self.input_jelszo_megjelenitese.setObjectName("jelszo_megjelenitese")
         self.input_jelszo_megjelenitese.clicked.connect(lambda: kezelo.jelszo_megjelenitese(self.input_jelszo,self.input_jelszo_megjelenitese,"Jelszavad"))
         
         self.errorUzenet=QLabel(self)
         self.errorUzenet.setMaximumHeight(60)
+        self.errorUzenet.setObjectName("error")
         self.bejelentkezesGomb = QPushButton('Bejelentkezés', self)
         def ErrorUzenet():
             szotar=kezelo.benyujtott_bejelentkezes(self.input_felhasznalonev,self.input_jelszo)
@@ -166,34 +276,66 @@ class MyWindow(QWidget):
             else:
                 self.errorUzenet.setText(szotar["válasz"])
         self.bejelentkezesGomb.clicked.connect(ErrorUzenet)
-        self.Vissza = QPushButton('Vissza', self)
+        self.bejelentkezesGomb.setObjectName("regisztracioGomb")#TODO
+        self.Vissza = QPushButton('Vissza a főoldalra', self)
         self.Vissza.clicked.connect(self.main)
+        self.Vissza.setObjectName("vissza")
         
-        self.mylayout.addWidget(self.felhasznalonev,0,0,1,1)
-        self.mylayout.addWidget(self.input_felhasznalonev,0,1,1,2)
-        self.mylayout.addWidget(self.jelszo,1,0,1,1)
-        self.mylayout.addWidget(self.input_jelszo,1,1,1,2)
-        self.mylayout.addWidget(self.input_jelszo_megjelenitese,1,2,1,1)
-        self.mylayout.addWidget(self.errorUzenet,2,0,1,2)
-        self.mylayout.addWidget(self.bejelentkezesGomb,3,1,1,2)
-        self.mylayout.addWidget(self.Vissza,3,0,1,1)
+        self.ures=QWidget(self)
+        self.ures.setObjectName("noBorder")
+        self.resizeWidgets.append({
+            "elem":self.ures,
+            "mive":0
+        })
+        self.ures.setFixedWidth(int(self.frameGeometry().size().width()/2))
+        
+        self.mylayout.addWidget(self.oldalCim,0,0,1,2,QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignTop)
+        self.mylayout.addWidget(self.input_felhasznalonev,1,0,1,1)
+        self.mylayout.addWidget(self.ures,1,1,3,1)
+        self.mylayout.addWidget(self.input_jelszo,2,0,1,1)
+        self.mylayout.addWidget(self.input_jelszo_megjelenitese,2,0,1,1,QtCore.Qt.AlignmentFlag.AlignRight)
+        self.mylayout.addWidget(self.errorUzenet,3,0,1,1)
+        self.mylayout.addWidget(self.bejelentkezesGomb,4,0,1,2,QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignBottom)
+        self.mylayout.addWidget(self.Vissza,5,0,1,2,QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignBottom)
     def layoutvisszaallitasa(self):
-        self.mainCSS= """
-            * {
-                border:10px solid black;
-                background-color: #666666;
-                font-size:30px;
-                
-            }
-        """
-        self.setStyleSheet(self.mainCSS)
-        for i in reversed(range(self.mylayout.count())): 
-            self.mylayout.itemAt(i).widget().deleteLater()
+        self.resizeWidgets=[]
+        self.setStyleSheet(self.foCSS)
+        while self.mylayout.count():
+            child = self.mylayout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
     def mindig_latszik_belepve(self, felhasznalonev:str):
         nev=kezelo.felhasznalo_neve(felhasznalonev)
         pont=kezelo.dinamikusPontSzamolás(felhasznalonev)
-        self.pont = QLabel(f"Pontod: {pont}\nFelhasználó Neved: {felhasznalonev}\nMegjelenített Neved: {nev}", self)
-        self.mylayout.addWidget(self.pont,0,0,1,1)
+        
+        self.pont = QLabel(f"Pontszám: {pont}", self)
+        self.pont.setObjectName("profil_pontszam")
+        self.felhasznalonev = QLabel(f"Név: {felhasznalonev}", self)
+        self.felhasznalonev.setObjectName("profil_felhasznalonev")
+        self.nev = QLabel(f"Megjelenített név: {nev}", self)
+        self.nev.setObjectName("profil_nev")
+        self.kep = QLabel(self)
+        self.kep.setObjectName("profil_kep")
+        self.kep.setFixedHeight(300)
+        self.kep.setFixedWidth(300)
+        
+        self.hatter2=QWidget(self)
+        self.hatter2.setObjectName("profilhatter")
+        
+        self.ures=QWidget(self)
+        self.ures.setObjectName("ures")
+        
+        
+        self.mylayout.addWidget(self.kep,0,0,3,1,QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.mylayout.addWidget(self.hatter2,0,0,7,1)
+        self.mylayout.addWidget(self.pont,3,0,1,1,QtCore.Qt.AlignmentFlag.AlignTop)
+        self.mylayout.addWidget(self.felhasznalonev,3,0,1,1,QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.mylayout.addWidget(self.nev,3,0,1,1,QtCore.Qt.AlignmentFlag.AlignBottom)
+        self.mylayout.addWidget(self.ures,4,0,3,1)
+        
+        self.hatter2.show()
+        self.hatter2.lower()
+        
         return nev
     def fogado_oldal(self,felhasznalonev:str):
         self.layoutvisszaallitasa()
@@ -209,7 +351,7 @@ class MyWindow(QWidget):
         self.osszesJatekBox.setLayout(self.osszesJatek)
         self.osszesJatekTarolo.setWidget(self.osszesJatekBox)
         
-        self.mylayout.addWidget(self.osszesJatekTarolo,2,0,1,1)
+        self.mylayout.addWidget(self.osszesJatekTarolo,2,1,1,1)
         self.elerheto_jatekok = QLabel("Le nem zárt játékok:",self.osszesJatekTarolo)
         self.osszesJatek.addWidget(self.elerheto_jatekok)
     
@@ -255,7 +397,7 @@ class MyWindow(QWidget):
         self.osszesJatekBox.setLayout(self.osszesJatek)
         self.osszesJatekTarolo.setWidget(self.osszesJatekBox)
         
-        self.mylayout.addWidget(self.osszesJatekTarolo,2,0,1,1)
+        self.mylayout.addWidget(self.osszesJatekTarolo,2,1,1,1)
         self.elerheto_jatekok = QLabel("Le nem zárt játékaid:",self.osszesJatekTarolo)
         self.osszesJatek.addWidget(self.elerheto_jatekok)
         for jatek in map(lambda x: kezelo.jatekot_felhasznalo_szervezte(x,felhasznalonev), kezelo.le_van_e_zarva_osszes_jatekot_vissza_adja()):
@@ -297,18 +439,11 @@ class MyWindow(QWidget):
         self.megnevezes_input.setPlaceholderText("Megnevezése")
         self.alanyok_label = QLabel("Kik az alanyok? (különböznek egymástól)",self)
         self.esemenyek_label = QLabel("Mik az események? (különböznek egymástól)",self)
-        self.mylayout.addWidget(self.megnevezes,1,0,1,1)
-        self.mylayout.addWidget(self.megnevezes_input,1,1,1,1)
+        self.mylayout.addWidget(self.megnevezes,1,1,1,1)
+        self.mylayout.addWidget(self.megnevezes_input,1,2,1,1)
 
         alap_alanyok_szama=2
         alap_esemenyek_szama=2
-        
-        
-        
-        
-        
-        
-        
         
         self.osszesAlanyTarolo=QScrollArea(self)
         self.osszesAlanyTarolo.setWidgetResizable(True)
@@ -336,18 +471,18 @@ class MyWindow(QWidget):
         self.esemenyek_plusz.setMaximumWidth(100)
         self.alanyok_plusz.clicked.connect(lambda: kezelo.plusAlanyokésEsemenyek(1,0,self.osszesAlany,self.osszesEsemeny,self.osszesAlanyBox,self.osszesEsemenyBox))
         self.esemenyek_plusz.clicked.connect(lambda: kezelo.plusAlanyokésEsemenyek(0,1,self.osszesAlany,self.osszesEsemeny,self.osszesAlanyBox,self.osszesEsemenyBox))
-        self.mylayout.addWidget(self.alanyok_label,2,0,1,1)
-        self.mylayout.addWidget(self.alanyok_plusz,2,1,1,1,QtCore.Qt.AlignmentFlag.AlignRight)
-        self.mylayout.addWidget(self.osszesAlanyTarolo,3,0,1,2)
+        self.mylayout.addWidget(self.alanyok_label,2,1,1,1)
+        self.mylayout.addWidget(self.alanyok_plusz,2,2,1,1,QtCore.Qt.AlignmentFlag.AlignRight)
+        self.mylayout.addWidget(self.osszesAlanyTarolo,3,1,1,2)
         kezelo.plusAlanyokésEsemenyek(alap_alanyok_szama,0,self.osszesAlany,self.osszesEsemeny,self.osszesAlanyBox,self.osszesEsemenyBox)
-        self.mylayout.addWidget(self.esemenyek_label,4,0,1,1)
-        self.mylayout.addWidget(self.esemenyek_plusz,4,1,1,1,QtCore.Qt.AlignmentFlag.AlignRight)
-        self.mylayout.addWidget(self.osszesEsemenyTarolo,5,0,1,2)
+        self.mylayout.addWidget(self.esemenyek_label,4,1,1,1)
+        self.mylayout.addWidget(self.esemenyek_plusz,4,2,1,1,QtCore.Qt.AlignmentFlag.AlignRight)
+        self.mylayout.addWidget(self.osszesEsemenyTarolo,5,1,1,2)
         kezelo.plusAlanyokésEsemenyek(0,alap_esemenyek_szama,self.osszesAlany,self.osszesEsemeny,self.osszesAlanyBox,self.osszesEsemenyBox)
         
         self.errorUzenet=QLabel(self)
         self.errorUzenet.setMaximumHeight(60)
-        self.mylayout.addWidget(self.errorUzenet,6,0,1,2)
+        self.mylayout.addWidget(self.errorUzenet,6,1,1,2)
         
         self.keszGomb=QPushButton("Kész",self)
         def ErrorÜzenetek():
@@ -359,10 +494,10 @@ class MyWindow(QWidget):
         
         
         
-        self.mylayout.addWidget(self.keszGomb,7,0,1,1)
+        self.mylayout.addWidget(self.keszGomb,7,1,1,1)
         self.Vissza=QPushButton("Vissza",self)
         self.Vissza.clicked.connect(lambda: self.szervezo_oldal(felhasznalonev))
-        self.mylayout.addWidget(self.Vissza,7,1,1,1)
+        self.mylayout.addWidget(self.Vissza,7,2,1,1)
     def lezaras(self,jatek,felhasznalonev:str):
         self.layoutvisszaallitasa()
         self.mindig_latszik_belepve(felhasznalonev)
@@ -391,13 +526,35 @@ class MyWindow(QWidget):
     def bejelentkezett_oldal(self,felhasznalonev:str):
         self.layoutvisszaallitasa()
         self.mindig_latszik_belepve(felhasznalonev)
+        self.setStyleSheet(self.foCSS+"""
+                    #cim{
+                        font-size:100px;
+                        color:white;
+                        padding-left: 100px;
+                        padding-right:100px;
+                        background-color:black;
+                        border-radius:50px;
+                        height:min-content
+                    }
+                    #vissza{
+                        border:none;
+                        color:black;
+                        text-decoration: underline;
+                    }
+                    #fogado,#szervezo{
+                        background-color:yellow;
+                        padding-top:50px;
+                        padding-bottom:250px;
+                        margin-top:0;
+                    }
+                    """)
         
         self.beallitasok=QPushButton("⚙️",self)
         self.beallitasok.clicked.connect(lambda: self.profil_beallitasok(felhasznalonev))
-        self.mylayout.addWidget(self.beallitasok,0,1,1,1)
         
-        self.szerepkor = QLabel(f"Válaszd ki a szerepköröd!", self)
+        self.szerepkor = QLabel(f"Szerepválasztás", self)
         self.szerepkor.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.szerepkor.setObjectName("cim")
         
         self.szervezo = QPushButton('Szervező', self)
         self.szervezo.clicked.connect(lambda: self.szervezo_oldal(felhasznalonev))
@@ -407,55 +564,48 @@ class MyWindow(QWidget):
         self.fogado.clicked.connect(lambda: self.fogado_oldal(felhasznalonev))
         self.fogado.setObjectName("fogado")
         
-        self.Vissza = QPushButton('Vissza a menübe', self)
+        self.Vissza = QPushButton('Vissza a főoldalra', self)
         self.Vissza.clicked.connect(self.main)
+        self.Vissza.setObjectName("vissza")
         
-        
-        self.setStyleSheet(self.mainCSS+
-        """
-        #fogado,#szervezo{
-            height:300px;
-            background-color:yellow
-        }
-        """
-        )
-        self.mylayout.addWidget(self.szerepkor,1,0,1,2)
-        self.mylayout.addWidget(self.szervezo,2,0,1,1)
-        self.mylayout.addWidget(self.fogado,2,1,1,1)
-        self.mylayout.addWidget(self.Vissza,3,0,1,2)
+        #self.mylayout.addWidget(self.beallitasok,0,1,1,1)
+        self.mylayout.addWidget(self.szerepkor,0,1,1,2)
+        self.mylayout.addWidget(self.szervezo,1,1,3,1)
+        self.mylayout.addWidget(self.fogado,1,2,3,1)
+        self.mylayout.addWidget(self.Vissza,3,0,1,3,QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignBottom)
     def fogadas_leadasa(self,jatek:dict,felhasznalonev:str):
         self.layoutvisszaallitasa()
         self.mindig_latszik_belepve(felhasznalonev)
         
         self.kivalasztott_jatek_neve=QLabel(f"{jatek['jatek_neve']}-hoz való fogadás:",self)
-        self.mylayout.addWidget(self.kivalasztott_jatek_neve,1,0,1,2)
+        self.mylayout.addWidget(self.kivalasztott_jatek_neve,1,1,1,2)
         
         self.kivalasztott_alany=QLabel("Kiválasztandó alany:",self)
         self.kivalasztott_alany_input=QComboBox(self)
         self.kivalasztott_alany_input.addItems(jatek["alanyok"])
-        self.mylayout.addWidget(self.kivalasztott_alany,2,0,1,1)
-        self.mylayout.addWidget(self.kivalasztott_alany_input,2,1,1,1)
+        self.mylayout.addWidget(self.kivalasztott_alany,2,1,1,1)
+        self.mylayout.addWidget(self.kivalasztott_alany_input,2,2,1,1)
         
         self.kivalasztott_esemeny=QLabel("Kiválasztandó esemény:",self)
         self.kivalasztott_esemeny_input=QComboBox(self)
         self.kivalasztott_esemeny_input.addItems(jatek["esemenyek"])
-        self.mylayout.addWidget(self.kivalasztott_esemeny,3,0,1,1)
-        self.mylayout.addWidget(self.kivalasztott_esemeny_input,3,1,1,1)
+        self.mylayout.addWidget(self.kivalasztott_esemeny,3,1,1,1)
+        self.mylayout.addWidget(self.kivalasztott_esemeny_input,3,2,1,1)
         
         self.ertek=QLabel("Válassz egy értéket!",self)
         self.ertek_input=QLineEdit(self)
         self.ertek_input.setPlaceholderText("érték")
-        self.mylayout.addWidget(self.ertek,4,0,1,1)
-        self.mylayout.addWidget(self.ertek_input,4,1,1,1)
+        self.mylayout.addWidget(self.ertek,4,1,1,1)
+        self.mylayout.addWidget(self.ertek_input,4,2,1,1)
         
         self.tet=QLabel("Válassz egy tétet!",self)
         self.tet_input=QLineEdit(self)
         self.tet_input.setPlaceholderText("tét")
-        self.mylayout.addWidget(self.tet,5,0,1,1)
-        self.mylayout.addWidget(self.tet_input,5,1,1,1)
+        self.mylayout.addWidget(self.tet,5,1,1,1)
+        self.mylayout.addWidget(self.tet_input,5,2,1,1)
         
         self.errorUzenet=QLabel(self)
-        self.mylayout.addWidget(self.errorUzenet,6,0,1,2)
+        self.mylayout.addWidget(self.errorUzenet,6,1,1,2)
         
         def ErrorÜzenetek():
             valasz = kezelo.benyujtott_fogadas(felhasznalonev,jatek,self.kivalasztott_alany_input,self.kivalasztott_esemeny_input,self.ertek_input,self.tet_input)
@@ -466,11 +616,11 @@ class MyWindow(QWidget):
         
         self.fogadasGomb=QPushButton("Fogadás leadása!",self)
         self.fogadasGomb.clicked.connect(ErrorÜzenetek)
-        self.mylayout.addWidget(self.fogadasGomb,7,1,1,1)
+        self.mylayout.addWidget(self.fogadasGomb,7,2,1,1)
         
         self.Vissza=QPushButton("Vissza",self)
         self.Vissza.clicked.connect(lambda: self.fogado_oldal(felhasznalonev))
-        self.mylayout.addWidget(self.Vissza,7,0,1,1)
+        self.mylayout.addWidget(self.Vissza,7,1,1,1)
     def ranglista(self):
         self.layoutvisszaallitasa()
         
@@ -575,7 +725,12 @@ class MyWindow(QWidget):
         self.Vissza.clicked.connect(lambda: self.bejelentkezett_oldal(felhasznalonev))
         self.mylayout.addWidget(self.Vissza,3,0,1,1)
     def resizeEvent(self, event):
+        print(self.frameGeometry().size())
+        self.mivek=[int(self.frameGeometry().size().width()/2)]
         print("Window has been resized")
+        for element in self.resizeWidgets:
+            print(len(self.resizeWidgets))
+            element["elem"].setFixedWidth(self.mivek[element["mive"]])
         QWidget.resizeEvent(self, event)
 if __name__ == '__main__':
     app = QApplication(sys.argv)
