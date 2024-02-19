@@ -139,7 +139,7 @@ class MyWindow(QWidget):
         self.setGeometry(xCoord, yCoord, winWidht, winHeight)
 
         # Képernyő címe
-        self.setWindowTitle('A Sorsod Borsod')
+        self.setWindowTitle('Fogadás managger 2000')
         
         
         icon_path="icon.jpg"
