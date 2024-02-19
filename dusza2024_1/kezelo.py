@@ -392,7 +392,7 @@ def benyujtott_regisztracio(felhasznalo_nev_input:QLineEdit,jelszo_input:QLineEd
     if jelszo != megerosito_jelszo_input.placeholderText():
         return "Nem egyezik meg a jelszó!"
     fajl = open("felhasznalok.txt","a",encoding="utf8")
-    fajl.write(f"{felhasznalo_nev};{jelszo_titkositasa(jelszo)};{felhasznalo_nev}\n") #TODO: IMPORTANT az 0. a felhasznalonev, megváltoztathatatlan, a 2. a megjelenített név
+    fajl.write(f"{felhasznalo_nev};{jelszo_titkositasa(jelszo)};{felhasznalo_nev}\n") #FONTOS: az 0. a felhasznalonev, megváltoztathatatlan, a 2. a megjelenített név
     fajl.close()
     return True
 def benyujtott_bejelentkezes(input_felhasznalonev:QLineEdit,input_jelszo:QLineEdit):

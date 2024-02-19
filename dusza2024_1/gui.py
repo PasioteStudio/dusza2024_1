@@ -279,7 +279,7 @@ class MyWindow(QWidget):
             else:
                 self.errorUzenet.setText(szotar["válasz"])
         self.bejelentkezesGomb.clicked.connect(ErrorUzenet)
-        self.bejelentkezesGomb.setObjectName("bejelentkezesGomb")#TODO
+        self.bejelentkezesGomb.setObjectName("bejelentkezesGomb")
         self.Vissza = QPushButton('Vissza a főoldalra', self)
         self.Vissza.clicked.connect(self.main)
         self.Vissza.setObjectName("vissza")
@@ -759,4 +759,4 @@ if __name__ == '__main__':
     
     
     sys.exit(app.exec_())
-#TODO: design, ppt, dinamikus szorzó, egyéb ötletek
+#TODO: design, ppt, dokumentációk
