@@ -437,7 +437,7 @@ def benyujtott_eredmeny(jatek:dict,alanyok_es_esemyenek_messages:list):
     for eredmeny in eredmeny_txt_be["eredmenyek"]:
         fajl.write(f"{eredmeny['alany']};{eredmeny['esemeny']};{eredmeny['eredmeny']};{szorzo}\n")
     fajl.close()
-    szorzo_frissitese(jatek["jatek_neve"])
+    dinamikusszorzo_frissitese(jatek["jatek_neve"])
     return jatek
 def plusAlanyokésEsemenyek(plusz_alany:int,plusz_esemeny:int,osszesAlany:QGridLayout,osszesEsemeny:QGridLayout,alanyTarolo:QWidget,esemenyTarolo:QWidget):
     
@@ -691,3 +691,51 @@ def benyujtott_profilbeallitasok(felhasznalonev:str,megjelenitett_nev_input:QLin
             atirni_egy_sort("felhasznalok.txt",id,f"{reszek[0]};{reszek[1]};{megjelenitett_nev_input.text()}")
             return True
     return "Valami nem jó!"
+def dinamikusszorzo_frissitese(jatek_neve:str):
+    fajl=open("fogadasok.txt","r",encoding="utf8")
+    sorok=fajl.readlines()
+    fajl.close()
+    fogadasok={}
+    for sor in sorok:
+        reszek=sor.strip().split(";")
+        if(reszek[1]==jatek_neve):
+            fogadasok[reszek[3]+reszek[4]]=0
+    for sor in sorok:
+        reszek=sor.strip().split(";")
+        if(reszek[1]==jatek_neve):
+            fogadasok[reszek[3]+reszek[4]]+=1
+    #Ki olvastuk a fogadasok.txt fájlból, hogy mennyi fogadás van egy-egy alany és eseményen az adott játékban
+
+    
+    fajl2=open("eredmenyek.txt","r",encoding="utf8")
+    sorok2=fajl2.readlines()
+    fajl2.close()
+    talalt=False
+    
+    osszes_fogadas_szama=0
+    for alanyEsemeny in fogadasi_statisztika_guihoz(jatek_neve):
+        osszes_fogadas_szama+=alanyEsemeny["fogadasok_szama"]
+    
+    #Végigmegyünk az eredmenyek.txt fájlon, hogy a szorzó képletével végigszámolva beírjuk azt
+    for id,sor2 in enumerate(sorok2):
+        reszek2=sor2.strip().split(";")
+        if(talalt):
+            if reszek2[0]+reszek2[1] in fogadasok.keys():
+                k=fogadasok[reszek2[0]+reszek2[1]]
+                o=osszes_fogadas_szama
+                if k==0:
+                    szorzo= round(1 + (5/(2 ** k - 1))+o/0.5/5,2)
+                else:
+                    szorzo= round(1 + (5/(2 ** k - 1))+o/k/5,2)
+            else:
+                k=0
+                szorzo=0
+            if(k==0):
+                szorzo=round(1+o/0,5/5,2)
+            
+            atirni_egy_sort("eredmenyek.txt",id,f"{reszek2[0]};{reszek2[1]};{reszek2[2]};{szorzo}\n")
+        if(jatek_neve == reszek2[0]):
+            if not len(reszek2) > 1:
+                talalt=True
+
+
