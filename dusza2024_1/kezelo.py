@@ -450,6 +450,7 @@ def plusAlanyokésEsemenyek(plusz_alany:int,plusz_esemeny:int,osszesAlany:QGridL
         uj_alany= QLineEdit(alanyTarolo)
         uj_alany.setPlaceholderText(f"alany")
         uj_alany.setFixedHeight(100)
+        uj_alany.setObjectName("alany")
         osszesAlany.addWidget(uj_alany,sor,oszlop,1,1)
     for i in range(plusz_esemeny):
         hany=len(esemenyTarolo.children())-1
@@ -458,6 +459,7 @@ def plusAlanyokésEsemenyek(plusz_alany:int,plusz_esemeny:int,osszesAlany:QGridL
         
         uj_esemeny= QLineEdit(esemenyTarolo)
         uj_esemeny.setPlaceholderText(f"esemény")
+        uj_esemeny.setObjectName("esemeny")
         uj_esemeny.setFixedHeight(100)
         osszesEsemeny.addWidget(uj_esemeny,sor,oszlop,1,1)
 def benyujtott_jatek_letrehozasa(felhasznalonev:str,megnevezes_input:QLineEdit,osszesAlany:QGroupBox,osszesEsemeny:QGroupBox):   
@@ -663,10 +665,12 @@ def fogadasiStatisztikaKivalasztottjatekInputahoz(kivalasztott_jatek_input:QComb
             osszesAlanyEsemeny.itemAt(i).widget().deleteLater()
     jatek=fogadasi_statisztika_guihoz(kivalasztott_jatek_input.currentText())
     jatek_neve=QLabel(f"{kivalasztott_jatek_input.currentText()}-hoz statisztikák: ",osszesAlanyEsemenyTarolo)
+    jatek_neve.setObjectName("fogadasi_statisztika_cim")
     osszesAlanyEsemeny.addWidget(jatek_neve)
     for alany_es_esemenyek in jatek:
         alany_es_esemenyek_label = QLabel(f"{alany_es_esemenyek['alany']}+{alany_es_esemenyek['esemeny']}-hez/höz adatok:\nfogadások száma:{alany_es_esemenyek['fogadasok_szama']}\nfeltett tétek összpontszáma:{alany_es_esemenyek['feltett_tetek_osszpontszama']}\nnyeremények összpontszáma:{alany_es_esemenyek['nyeremenyek_osszpontszama']}",osszesAlanyEsemenyTarolo)
         alany_es_esemenyek_label.setMaximumHeight(300)
+        alany_es_esemenyek_label.setObjectName("jatekstatisztika_label")
         osszesAlanyEsemeny.addWidget(alany_es_esemenyek_label)
 def felhasznalo_neve(felhasznalonev:str):
     fajl=open("felhasznalok.txt","r",encoding="utf8")

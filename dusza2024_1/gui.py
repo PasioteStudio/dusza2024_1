@@ -9,133 +9,9 @@ from PyQt5.QtWidgets import QLabel, QApplication, QWidget, QPushButton, QLineEdi
 class MyWindow(QWidget):
     def __init__(self):
         self.profilok=[]
-        self.foCSS="""
-            * {
-                border:10px solid black;
-                background-color: #666666;
-                font-size:30px;
-                border-radius:25px
-            }
-            #cim,#szerepvalasztas{
-                font-size:100px;
-                color:white;
-                padding-left: 100px;
-                padding-right:100px;
-                background-color:black;
-                border-radius:50px;
-                height:min-content
-            }
-            #szerepvalasztas{
-                padding:0;
-                margin: 50px 200px 100px 200px; 
-            }
-            #greet{
-                font-size:100px;
-                border:none;
-                color:gold;
-                font-weight:bold;
-                background-color: transparent;
-            }
-            #greetOutline{
-                font-size:101px;
-                border:none;
-                color:black;
-                font-weight:bold;
-            }
-            #fogado,#szervezo{
-                font-size:100px;
-                background-color:yellow;
-                padding:0 0px 500px 0;
-                border-radius:0;
-                border:none;
-            }
-            #szervezo{
-                margin-right:50px;
-                margin-left:100px;
-            }
-            #fogado{
-                margin-left:50px;
-                margin-right:100px;
-            }
-            #beallitasok{
-                border:none !important;
-                margin:100px;
-                background-color:black;
-                border-radius:30px;
-                padding:10px;
-            }
-            #noBorder{
-                border:none !important;
-            }
-            #profilhatter{
-                background-color:gold !important;
-                
-            }
-            #profil_felhasznalonev, #profil_nev,#profil_pontszam,#ures{
-                color:black;
-                font-size:35px;
-                border:none;
-                background:none;
-                margin-left: 50px;
-            }
-            #profil_kep{
-                background: url('assets/icon.jpg') no-repeat contain;
-                border: 1px solid black;
-                border-radius:150px !important;
-            }
-            #vissza{
-                border:none;
-                color:black;
-                text-decoration: underline;
-            }
-            #jelszo_megjelenitese{
-                background-color:black
-            }
-            #regisztracioGomb, #bejelentkezesGomb{
-                color:gold;
-                background-color:black;
-                font-weight:bold;
-                font-size:75px;
-                padding: 10px 70px;
-            }
-            #felhasznalonev,#jelszo,#megerosito_jelszo,#error{
-                color:gold;
-                background-color:black;
-                font-weight:bold;
-                margin: 15px 0;
-                margin-left:100px;
-                font-size:35px;
-            }
-            #error{
-                margin:0 0 0 100px;
-            }
-            #elerheto{
-                border:none;
-                background-color:gray;
-                padding:20px;
-            }
-            #jatek_tarolo{
-                border:none
-            }
-            #jatek{
-                border:none;
-                background-color:gray;
-                padding:20px;
-            }
-            QComboBox{
-                padding:20px
-            }
-            #fogadasGomb,#lezarasGomb,#jatekLetrehozasGomb,#MentesGomb{
-                border:none;
-                background-color:green;
-                border-radius:10px;
-            }
-            #JatekIcon{
-                border:none;
-                background: url('assets/token.png') no-repeat contain;
-                border-radius:250px;
-            }
-        """
+        with open('gui.css', 'r') as file:
+            css = file.read()
+        self.foCSS=css
         super().__init__()
         self.initUI()
 
@@ -153,7 +29,6 @@ class MyWindow(QWidget):
         
 
         # Képernyő méretei és pozíciója
-        #self.mylayout.deleteLater()
         xCoord = 100
         yCoord = 100
         winWidht = 300
@@ -431,7 +306,8 @@ class MyWindow(QWidget):
             self.jatek_neve.setMaximumHeight(180)
             self.jatek_neve.setObjectName("jatek")
             self.fogadasGomb = QPushButton('Fogadás', self.osszesJatekTarolo)
-            self.fogadasGomb.clicked.connect(lambda: self.fogadas_leadasa(jatek,felhasznalonev))
+            self.fogadasGomb.setProperty("jatek",jatek["jatek_neve"])
+            self.fogadasGomb.clicked.connect(lambda: self.fogadas_leadasa(felhasznalonev))
             self.fogadasGomb.setObjectName("fogadasGomb")
             self.osszesJatek.addWidget(self.jatek_neve)
             self.osszesJatek.addWidget(self.fogadasGomb)
@@ -484,11 +360,12 @@ class MyWindow(QWidget):
             self.jatek_neve = QLabel(f"{jatek['jatek_neve']}\n{alanyok}\n{esemenyek}\n", self.osszesJatekTarolo)
             self.jatek_neve.setMaximumHeight(180)
             self.jatek_neve.setObjectName("jatek")
-            self.lezarasGomb = QPushButton('Játék lezárása', self.osszesJatekTarolo)
-            self.lezarasGomb.clicked.connect(lambda: self.lezaras(jatek,felhasznalonev))
-            self.lezarasGomb.setObjectName("lezarasGomb")
+            lezarasGomb = QPushButton('Játék lezárása', self.osszesJatekTarolo)
+            lezarasGomb.setProperty("jatek",jatek["jatek_neve"])
+            lezarasGomb.clicked.connect(lambda: self.lezaras(felhasznalonev))
+            lezarasGomb.setObjectName("lezarasGomb")
             self.osszesJatek.addWidget(self.jatek_neve)
-            self.osszesJatek.addWidget(self.lezarasGomb)
+            self.osszesJatek.addWidget(lezarasGomb)
         
         
         self.Vissza = QPushButton('Vissza a szerepválasztáshoz', self)
@@ -562,8 +439,10 @@ class MyWindow(QWidget):
             valasz = kezelo.benyujtott_jatek_letrehozasa(felhasznalonev,self.megnevezes_input,self.osszesAlanyBox,self.osszesEsemenyBox)
             if not valasz ==True:
                 self.errorUzenet.setText(valasz)
+            else:
+                self.szervezo_oldal(felhasznalonev)
         self.keszGomb.clicked.connect(ErrorÜzenetek)
-        
+        self.keszGomb.setObjectName("jatekLetrehozasGomb")
         
         
         
@@ -572,10 +451,18 @@ class MyWindow(QWidget):
         self.Vissza.setObjectName("vissza")
         self.Vissza.clicked.connect(lambda: self.szervezo_oldal(felhasznalonev))
         self.mylayout.addWidget(self.Vissza,7,2,1,1)
-    def lezaras(self,jatek,felhasznalonev:str):
+    def lezaras(self,felhasznalonev:str):
         self.layoutvisszaallitasa()
         self.mindig_latszik_belepve(felhasznalonev)
+
+        def temp():  
+            for jatek2 in map(lambda x: kezelo.jatekot_felhasznalo_szervezte(x,felhasznalonev), kezelo.le_van_e_zarva_osszes_jatekot_vissza_adja()):
+                if jatek2["jatek_neve"]==self.sender().property("jatek"):
+                    print("sff"+jatek2["jatek_neve"])
+                    return jatek2
+        jatek = temp()
         self.jatek_neve=QLabel(f"{jatek['jatek_neve']}-hoz való eredmények:")
+        self.jatek_neve.setObjectName("jatekNeve")
         self.alanyok_es_esemyenek_uzenetek=[]
         for alany in jatek['alanyok']:
             for esemeny in jatek['esemenyek']: 
@@ -584,6 +471,8 @@ class MyWindow(QWidget):
                 self.uzenet.setPlaceholderText(f"{alany} és {esemeny}")
                 self.uzenet.setProperty("alany",alany)
                 self.uzenet.setProperty("esemeny",esemeny)
+                self.uzenet.setObjectName("alany")
+                self.uzenet_label.setObjectName("MentesGomb")
                 self.alanyok_es_esemyenek_uzenetek.append(self.uzenet)
                 self.mylayout.addWidget(self.uzenet,len(self.alanyok_es_esemyenek_uzenetek),2,1,1)
                 self.mylayout.addWidget(self.uzenet_label,len(self.alanyok_es_esemyenek_uzenetek),1,1,1)
@@ -594,13 +483,12 @@ class MyWindow(QWidget):
             self.mylayout.addWidget(self.uzenet)
             self.szervezo_oldal(felhasznalonev)
         self.keszGomb.clicked.connect(CircularImport)
-
+        self.keszGomb.setObjectName("MentesGomb")
         self.mylayout.addWidget(self.jatek_neve,0,1,1,2)
         alja=1+len(self.alanyok_es_esemyenek_uzenetek)
         if alja < 7:
             alja=7
         self.mylayout.addWidget(self.keszGomb,alja,2,1,1,QtCore.Qt.AlignmentFlag.AlignBottom)
-        print(1+len(self.alanyok_es_esemyenek_uzenetek))
         self.Vissza = QPushButton("Vissza a szervező oldalra",self)
         self.Vissza.clicked.connect(lambda: self.szervezo_oldal(felhasznalonev))
         self.Vissza.setObjectName("vissza")
@@ -637,33 +525,47 @@ class MyWindow(QWidget):
         self.mylayout.addWidget(self.szervezo,1,1,7,1)
         self.mylayout.addWidget(self.fogado,1,2,7,1)
         self.mylayout.addWidget(self.Vissza,7,0,1,3,QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignBottom)
-    def fogadas_leadasa(self,jatek:dict,felhasznalonev:str):
+    def fogadas_leadasa(self,felhasznalonev:str):
         self.layoutvisszaallitasa()
         self.mindig_latszik_belepve(felhasznalonev)
         
+        def temp():
+            for jatek2 in kezelo.le_van_e_zarva_osszes_jatekot_vissza_adja():
+                if jatek2["jatek_neve"] == self.sender().property("jatek"):
+                    return jatek2
+        jatek=temp()
         self.kivalasztott_jatek_neve=QLabel(f"{jatek['jatek_neve']}-hoz való fogadás:",self)
         self.mylayout.addWidget(self.kivalasztott_jatek_neve,0,1,1,2)
+        self.kivalasztott_jatek_neve.setObjectName("fogadasi_statisztika_cim")
         
         self.kivalasztott_alany=QLabel("Kiválasztandó alany:",self)
         self.kivalasztott_alany_input=QComboBox(self)
+        self.kivalasztott_alany_input.setObjectName("feherBg")
         self.kivalasztott_alany_input.addItems(jatek["alanyok"])
+        self.kivalasztott_alany.setObjectName("alany")
         self.mylayout.addWidget(self.kivalasztott_alany,1,1,1,1)
         self.mylayout.addWidget(self.kivalasztott_alany_input,1,2,1,1)
         
         self.kivalasztott_esemeny=QLabel("Kiválasztandó esemény:",self)
+        self.kivalasztott_esemeny.setObjectName("alany")
         self.kivalasztott_esemeny_input=QComboBox(self)
+        self.kivalasztott_esemeny_input.setObjectName("feherBg")
         self.kivalasztott_esemeny_input.addItems(jatek["esemenyek"])
         self.mylayout.addWidget(self.kivalasztott_esemeny,2,1,1,1)
         self.mylayout.addWidget(self.kivalasztott_esemeny_input,2,2,1,1)
         
         self.ertek=QLabel("Válassz egy értéket!",self)
+        self.ertek.setObjectName("alany")
         self.ertek_input=QLineEdit(self)
+        self.ertek_input.setObjectName("feherBg")
         self.ertek_input.setPlaceholderText("érték")
         self.mylayout.addWidget(self.ertek,3,1,1,1)
         self.mylayout.addWidget(self.ertek_input,3,2,1,1)
         
         self.tet=QLabel("Válassz egy tétet!",self)
+        self.tet.setObjectName("alany")
         self.tet_input=QLineEdit(self)
+        self.tet_input.setObjectName("feherBg")
         self.tet_input.setPlaceholderText("tét")
         self.mylayout.addWidget(self.tet,4,1,1,1)
         self.mylayout.addWidget(self.tet_input,4,2,1,1)
@@ -680,9 +582,11 @@ class MyWindow(QWidget):
         
         self.fogadasGomb=QPushButton("Fogadás leadása!",self)
         self.fogadasGomb.clicked.connect(ErrorÜzenetek)
+        self.fogadasGomb.setObjectName("MentesGomb")
         self.mylayout.addWidget(self.fogadasGomb,6,2,1,1)
         
-        self.Vissza=QPushButton("Vissza",self)
+        self.Vissza=QPushButton("Vissza a fogadásokhoz",self)
+        self.Vissza.setObjectName("vissza")
         self.Vissza.clicked.connect(lambda: self.fogado_oldal(felhasznalonev))
         self.mylayout.addWidget(self.Vissza,6,1,1,1)
     def ranglista(self):
@@ -696,9 +600,11 @@ class MyWindow(QWidget):
         self.osszesJatekosBox = QGroupBox()
         self.osszesJatekosBox.setLayout(self.osszesJatekos)
         self.osszesJatekosTarolo.setWidget(self.osszesJatekosBox)
+        self.osszesJatekosTarolo.setObjectName("noBorder")
         
         self.mylayout.addWidget(self.osszesJatekosTarolo,1,0,1,1)
         self.jatekosok_label = QLabel("Összes játékos:",self.osszesJatekosTarolo)
+        self.jatekosok_label.setObjectName("noBorder")
         self.jatekosok_label.setMaximumHeight(100)
         self.osszesJatekos.addWidget(self.jatekosok_label)
         
@@ -706,6 +612,11 @@ class MyWindow(QWidget):
         for id,jatekos in enumerate(jatekosok["nev_sorrendben"]):
             self.jatekos_label = QLabel(f"{jatekosok['igazi_helyezes'][id]}. helyen: {jatekos}, {jatekosok['pontszam_sorrendben'][id]} ponttal",self.osszesJatekosTarolo)
             self.jatekos_label.setMaximumHeight(100)
+            if id==0:
+                print(id)
+                self.jatekos_label.setObjectName("arany")
+            else:
+                self.jatekos_label.setObjectName("feher")
             self.osszesJatekos.addWidget(self.jatekos_label)
         self.Vissza=QPushButton("Vissza a lekérdezések oldalra",self)
         self.Vissza.clicked.connect(self.lekerdezes)
@@ -722,16 +633,19 @@ class MyWindow(QWidget):
         self.osszesJatekBox = QGroupBox()
         self.osszesJatekBox.setLayout(self.osszesJatek)
         self.osszesJatekTarolo.setWidget(self.osszesJatekBox)
+        self.osszesJatekTarolo.setObjectName("noBorder")
         
         self.mylayout.addWidget(self.osszesJatekTarolo,1,0,1,1)
         self.jatekok_label = QLabel("Összes játék:",self.osszesJatekTarolo)
         self.jatekok_label.setMaximumHeight(100)
+        self.jatekok_label.setObjectName("noBorder")
         self.osszesJatek.addWidget(self.jatekok_label)
         
         jatekok = kezelo.jatek_statisztika_guihoz()
         for jatek in jatekok:
             self.jatek_label = QLabel(f"{jatek['jatek_neve']}-ban/-ben\n{jatek['fogadasok_szama']}db fogadása van\n{jatek['nyeremenyek_osszpontszama']} összpontszáma van a nyereményeknek a játékhoz",self.osszesJatekTarolo)
             self.jatek_label.setMaximumHeight(200)
+            self.jatek_label.setObjectName("jatekstatisztika_label")
             self.osszesJatek.addWidget(self.jatek_label)
         self.Vissza=QPushButton("Vissza a lekérdezések oldalra",self)
         self.Vissza.setObjectName("vissza")
@@ -743,6 +657,7 @@ class MyWindow(QWidget):
         self.kivalasztott_jatek=QComboBox(self)
         self.kivalasztott_jatek.addItems(kezelo.osszesJatek())
         self.kivalasztott_jatek.currentIndexChanged.connect(lambda:kezelo.fogadasiStatisztikaKivalasztottjatekInputahoz(self.kivalasztott_jatek,self.osszesAlanyEsemeny,self.osszesAlanyEsemenyTarolo))
+        self.kivalasztott_jatek.setCurrentIndex(0)
         self.mylayout.addWidget(self.kivalasztott_jatek,0,0,1,1)
         
         self.osszesAlanyEsemenyTarolo=QScrollArea(self)
@@ -753,12 +668,14 @@ class MyWindow(QWidget):
         self.osszesAlanyEsemenyBox = QGroupBox()
         self.osszesAlanyEsemenyBox.setLayout(self.osszesAlanyEsemeny)
         self.osszesAlanyEsemenyTarolo.setWidget(self.osszesAlanyEsemenyBox)
+        self.osszesAlanyEsemenyTarolo.setObjectName("noBorder")
         
         self.mylayout.addWidget(self.osszesAlanyEsemenyTarolo,1,0,1,1)
         self.alanyEsemeny_label = QLabel("Összes alany és esemény:",self.osszesAlanyEsemenyTarolo)
         self.alanyEsemeny_label.setMaximumHeight(100)
         self.osszesAlanyEsemeny.addWidget(self.alanyEsemeny_label)
         
+        kezelo.fogadasiStatisztikaKivalasztottjatekInputahoz(self.kivalasztott_jatek,self.osszesAlanyEsemeny,self.osszesAlanyEsemenyTarolo)
         self.Vissza=QPushButton("Vissza a lekérdezések oldalra",self)
         self.Vissza.setObjectName("vissza")
         self.Vissza.clicked.connect(self.lekerdezes)
@@ -811,4 +728,3 @@ if __name__ == '__main__':
     
     
     sys.exit(app.exec_())
-#TODO: design, ppt, dokumentációk
