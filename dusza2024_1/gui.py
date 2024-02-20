@@ -31,6 +31,16 @@ class MyWindow(QWidget):
             }
             #greet{
                 font-size:100px;
+                border:none;
+                color:gold;
+                font-weight:bold;
+                background-color: transparent;
+            }
+            #greetOutline{
+                font-size:101px;
+                border:none;
+                color:black;
+                font-weight:bold;
             }
             #fogado,#szervezo{
                 font-size:100px;
@@ -47,8 +57,15 @@ class MyWindow(QWidget):
                 margin-left:50px;
                 margin-right:100px;
             }
+            #beallitasok{
+                border:none !important;
+                margin:100px;
+                background-color:black;
+                border-radius:30px;
+                padding:10px;
+            }
             #noBorder{
-                border:none !important
+                border:none !important;
             }
             #profilhatter{
                 background-color:gold !important;
@@ -62,7 +79,7 @@ class MyWindow(QWidget):
                 margin-left: 50px;
             }
             #profil_kep{
-                background: url('icon.jpg') no-repeat contain;
+                background: url('assets/icon.jpg') no-repeat contain;
                 border: 1px solid black;
                 border-radius:150px !important;
             }
@@ -108,10 +125,15 @@ class MyWindow(QWidget):
             QComboBox{
                 padding:20px
             }
-            #fogadasGomb,#lezarasGomb,#jatekLetrehozasGomb{
+            #fogadasGomb,#lezarasGomb,#jatekLetrehozasGomb,#MentesGomb{
                 border:none;
                 background-color:green;
                 border-radius:10px;
+            }
+            #JatekIcon{
+                border:none;
+                background: url('assets/token.png') no-repeat contain;
+                border-radius:250px;
             }
         """
         super().__init__()
@@ -142,7 +164,7 @@ class MyWindow(QWidget):
         self.setWindowTitle('Fogadás managger 2000')
         
         
-        icon_path="icon.jpg"
+        icon_path="assets/icon.jpg"
         self.setWindowIcon(QtGui.QIcon(icon_path))
         self.showMaximized() 
     
@@ -151,41 +173,62 @@ class MyWindow(QWidget):
         # CreateGomb létrehozása
         self.bejelentkezesGomb = QPushButton('Bejelentkezés', self)
         self.bejelentkezesGomb.clicked.connect(self.bejelentkezes_oldal)
+        self.bejelentkezesGomb.setObjectName("bejelentkezesGomb")
 
-        self.regisztraciosGomb = QPushButton('Regisztráció', self)
+        self.regisztraciosGomb = QPushButton('Még nincs fiókom', self)
         self.regisztraciosGomb.clicked.connect(self.regisztracios_oldal)
+        self.regisztraciosGomb.setObjectName("vissza")
         
         self.lekerdezesGomb = QPushButton('Lekérdezések', self)
         self.lekerdezesGomb.clicked.connect(self.lekerdezes)
+        self.lekerdezesGomb.setObjectName("vissza")
 
-        self.koszontes = QLabel('Üdvözöllek a fogadós játékba!', self)
+        self.koszontes = QLabel('Fogadas managger 2000', self)
         self.koszontes.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.koszontes.setObjectName("greet")
         
+        self.koszontesOutline = QLabel('Fogadas managger 2000', self)
+        self.koszontesOutline.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.koszontesOutline.setObjectName("greetOutline")
+        
+        self.JatekIcon=QLabel(self)
+        self.JatekIcon.setObjectName("JatekIcon")
+        self.JatekIcon.setFixedHeight(500)
+        self.JatekIcon.setFixedWidth(500)
         
         self.setStyleSheet(self.foCSS)
         
-        self.mylayout.addWidget(self.koszontes,0,0,1,3,QtCore.Qt.AlignmentFlag.AlignCenter)
-        self.mylayout.addWidget(self.bejelentkezesGomb,1,0,1,1)
-        self.mylayout.addWidget(self.regisztraciosGomb,1,1,1,1)
-        self.mylayout.addWidget(self.lekerdezesGomb,1,2,1,1)
+        self.mylayout.addWidget(self.JatekIcon,0,0,1,3,QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.mylayout.addWidget(self.koszontes,1,0,1,3,QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.mylayout.addWidget(self.koszontesOutline,1,0,1,3,QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.koszontes.raise_()
+        self.mylayout.addWidget(self.bejelentkezesGomb,2,0,1,3,QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.mylayout.addWidget(self.regisztraciosGomb,3,1,1,1)
+        self.mylayout.addWidget(self.lekerdezesGomb,3,2,1,1)
     def lekerdezes(self):
         self.layoutvisszaallitasa()
         self.ranglistaGomb=QPushButton("Ranglista",self)
         self.ranglistaGomb.clicked.connect(self.ranglista)
-        self.mylayout.addWidget(self.ranglistaGomb,0,0,1,1)
+        self.ranglistaGomb.setObjectName("bejelentkezesGomb")
+        self.ranglistaGomb.setSizePolicy(QtWidgets.QSizePolicy.Policy.Maximum, QtWidgets.QSizePolicy.Policy.Maximum)
+        self.mylayout.addWidget(self.ranglistaGomb,0,0,1,1,QtCore.Qt.AlignmentFlag.AlignCenter)
         
         self.jatekStatisztikaGomb=QPushButton("Játék statisztika",self)
         self.jatekStatisztikaGomb.clicked.connect(self.jatek_statisztika)
-        self.mylayout.addWidget(self.jatekStatisztikaGomb,0,1,1,1)
+        self.jatekStatisztikaGomb.setObjectName("bejelentkezesGomb")
+        self.jatekStatisztikaGomb.setSizePolicy(QtWidgets.QSizePolicy.Policy.Maximum, QtWidgets.QSizePolicy.Policy.Maximum)
+        self.mylayout.addWidget(self.jatekStatisztikaGomb,1,0,1,1,QtCore.Qt.AlignmentFlag.AlignCenter)
         
         self.FogadasiStatisztikaGomb=QPushButton("Fogadási statisztika",self)
         self.FogadasiStatisztikaGomb.clicked.connect(self.fogadasi_statisztika)
-        self.mylayout.addWidget(self.FogadasiStatisztikaGomb,0,2,1,1)
+        self.FogadasiStatisztikaGomb.setObjectName("bejelentkezesGomb")
+        self.FogadasiStatisztikaGomb.setSizePolicy(QtWidgets.QSizePolicy.Policy.Maximum, QtWidgets.QSizePolicy.Policy.Maximum)
+        self.mylayout.addWidget(self.FogadasiStatisztikaGomb,2,0,1,1,QtCore.Qt.AlignmentFlag.AlignCenter)
         
-        self.Vissza=QPushButton("Vissza",self)
+        self.Vissza=QPushButton("Vissza a főoldalra",self)
+        self.Vissza.setObjectName("vissza")
         self.Vissza.clicked.connect(self.main)
-        self.mylayout.addWidget(self.Vissza,1,0,1,3)
+        self.mylayout.addWidget(self.Vissza,3,0,1,1,QtCore.Qt.AlignmentFlag.AlignBottom)
     def regisztracios_oldal(self):
         self.layoutvisszaallitasa()
         self.oldalCim=QLabel("Regisztráció",self)
@@ -567,6 +610,7 @@ class MyWindow(QWidget):
         self.mindig_latszik_belepve(felhasznalonev)
         
         self.beallitasok=QPushButton("⚙️",self)
+        self.beallitasok.setObjectName("beallitasok")
         self.beallitasok.clicked.connect(lambda: self.profil_beallitasok(felhasznalonev))
         
         self.szerepkor = QLabel(f"Szerepválasztás", self)
@@ -587,7 +631,8 @@ class MyWindow(QWidget):
         self.Vissza.clicked.connect(self.main)
         self.Vissza.setObjectName("vissza")
         
-        #self.mylayout.addWidget(self.beallitasok,0,1,1,1)
+        self.mylayout.addWidget(self.beallitasok,0,2,1,1,QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignTop)
+        self.beallitasok.raise_()
         self.mylayout.addWidget(self.szerepkor,0,1,1,2)
         self.mylayout.addWidget(self.szervezo,1,1,7,1)
         self.mylayout.addWidget(self.fogado,1,2,7,1)
@@ -662,9 +707,10 @@ class MyWindow(QWidget):
             self.jatekos_label = QLabel(f"{jatekosok['igazi_helyezes'][id]}. helyen: {jatekos}, {jatekosok['pontszam_sorrendben'][id]} ponttal",self.osszesJatekosTarolo)
             self.jatekos_label.setMaximumHeight(100)
             self.osszesJatekos.addWidget(self.jatekos_label)
-        self.Vissza=QPushButton("Vissza",self)
+        self.Vissza=QPushButton("Vissza a lekérdezések oldalra",self)
         self.Vissza.clicked.connect(self.lekerdezes)
-        self.mylayout.addWidget(self.Vissza,2,0,1,1)
+        self.Vissza.setObjectName("vissza")
+        self.mylayout.addWidget(self.Vissza,2,0,1,1,QtCore.Qt.AlignmentFlag.AlignBottom)
     def jatek_statisztika(self):
         self.layoutvisszaallitasa()
         
@@ -687,9 +733,10 @@ class MyWindow(QWidget):
             self.jatek_label = QLabel(f"{jatek['jatek_neve']}-ban/-ben\n{jatek['fogadasok_szama']}db fogadása van\n{jatek['nyeremenyek_osszpontszama']} összpontszáma van a nyereményeknek a játékhoz",self.osszesJatekTarolo)
             self.jatek_label.setMaximumHeight(200)
             self.osszesJatek.addWidget(self.jatek_label)
-        self.Vissza=QPushButton("Vissza",self)
+        self.Vissza=QPushButton("Vissza a lekérdezések oldalra",self)
+        self.Vissza.setObjectName("vissza")
         self.Vissza.clicked.connect(self.lekerdezes)
-        self.mylayout.addWidget(self.Vissza,2,0,1,1)
+        self.mylayout.addWidget(self.Vissza,2,0,1,1,QtCore.Qt.AlignmentFlag.AlignBottom)
     def fogadasi_statisztika(self):
         self.layoutvisszaallitasa()
         
@@ -712,23 +759,26 @@ class MyWindow(QWidget):
         self.alanyEsemeny_label.setMaximumHeight(100)
         self.osszesAlanyEsemeny.addWidget(self.alanyEsemeny_label)
         
-        self.Vissza=QPushButton("Vissza",self)
+        self.Vissza=QPushButton("Vissza a lekérdezések oldalra",self)
+        self.Vissza.setObjectName("vissza")
         self.Vissza.clicked.connect(self.lekerdezes)
-        self.mylayout.addWidget(self.Vissza,2,0,1,1)
+        self.mylayout.addWidget(self.Vissza,2,0,1,1,QtCore.Qt.AlignmentFlag.AlignBottom)
     def profil_beallitasok(self,felhasznalonev:str):
         self.layoutvisszaallitasa()
         nev = self.mindig_latszik_belepve(felhasznalonev)
         
         self.megjelenitett_nev_label=QLabel("Megjelenített neved megváltoztatása:",self)
-        self.mylayout.addWidget(self.megjelenitett_nev_label,1,0,1,1)
+        self.megjelenitett_nev_label.setObjectName("noBorder")
+        self.mylayout.addWidget(self.megjelenitett_nev_label,1,1,1,1)
         
         self.megjelenitett_nev_input=QLineEdit(nev,self)
         self.megjelenitett_nev_input.setPlaceholderText("megjelenitett nev")
-        self.mylayout.addWidget(self.megjelenitett_nev_input,1,1,1,1)
+        self.mylayout.addWidget(self.megjelenitett_nev_input,1,2,1,1)
         
         self.errorUzenet=QLabel(self)
         self.errorUzenet.setMaximumHeight(60)
-        self.mylayout.addWidget(self.errorUzenet,2,0,1,2)
+        self.errorUzenet.setObjectName("noBorder")
+        self.mylayout.addWidget(self.errorUzenet,2,1,1,2)
         
         def ErrorÜzenetek():
             valasz = kezelo.benyujtott_profilbeallitasok(felhasznalonev,self.megjelenitett_nev_input)
@@ -737,12 +787,14 @@ class MyWindow(QWidget):
             else:
                 self.bejelentkezett_oldal(felhasznalonev)
         self.mentes=QPushButton("Mentés",self)
+        self.mentes.setObjectName("MentesGomb")
         self.mentes.clicked.connect(ErrorÜzenetek)
-        self.mylayout.addWidget(self.mentes,3,1,1,1)
+        self.mylayout.addWidget(self.mentes,3,2,5,1,QtCore.Qt.AlignmentFlag.AlignBottom)
         
-        self.Vissza=QPushButton("Vissza",self)
+        self.Vissza=QPushButton("Vissza a szerepválasztáshoz",self)
+        self.Vissza.setObjectName("vissza")
         self.Vissza.clicked.connect(lambda: self.bejelentkezett_oldal(felhasznalonev))
-        self.mylayout.addWidget(self.Vissza,3,0,1,1)
+        self.mylayout.addWidget(self.Vissza,3,1,5,1,QtCore.Qt.AlignmentFlag.AlignBottom)
     def resizeEvent(self, event):
         print(self.frameGeometry().size())
         self.mivek=[int(self.frameGeometry().size().width()/2)]
