@@ -1,26 +1,5 @@
-Keve;Allah megidézése;2;2
-Béla
-Kolbi
-Alvás
-Idézés
-Keve;Allah megidézése2;2;2
-Béla
-Kolbi
-Alvás
-Idézés
-Keve;Allah megidézése3;2;2
-Béla
-Kolbi
-Alvás
-Idézés
-Keve;asd;2;2
-asdsad
-asd
-asd
-asfasfasf
-Keve;asda;2;3
-asdsad
-asd
-asd
-asfasfasf
-seg
+Sigmakik;Példa játék;2;2
+Példa Béla
+Példa Ákos
+Példa program teljesítési ideje
+Példa program kimenetelének eredménye

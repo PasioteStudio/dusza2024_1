@@ -299,8 +299,8 @@ min_nev_hossz=4
 max_felhasznalonev_hossz=15
 min_felhasznalonev_hossz=4
 max_jateknev_hossz=50
-max_alany_hossz=25
-max_esemeny_hossz=25
+max_alany_hossz=50
+max_esemeny_hossz=50
 
 
 def jelszo_rejtese(input:QLineEdit,kezdeti_felirat:str):

@@ -455,12 +455,12 @@ class MyWindow(QWidget):
         self.layoutvisszaallitasa()
         self.mindig_latszik_belepve(felhasznalonev)
 
-        def temp():  
+        def jatekneve():  
             for jatek2 in map(lambda x: kezelo.jatekot_felhasznalo_szervezte(x,felhasznalonev), kezelo.le_van_e_zarva_osszes_jatekot_vissza_adja()):
                 if jatek2["jatek_neve"]==self.sender().property("jatek"):
                     print("sff"+jatek2["jatek_neve"])
                     return jatek2
-        jatek = temp()
+        jatek = jatekneve()
         self.jatek_neve=QLabel(f"{jatek['jatek_neve']}-hoz való eredmények:")
         self.jatek_neve.setObjectName("jatekNeve")
         self.alanyok_es_esemyenek_uzenetek=[]
@@ -529,11 +529,11 @@ class MyWindow(QWidget):
         self.layoutvisszaallitasa()
         self.mindig_latszik_belepve(felhasznalonev)
         
-        def temp():
+        def jatekneve():
             for jatek2 in kezelo.le_van_e_zarva_osszes_jatekot_vissza_adja():
                 if jatek2["jatek_neve"] == self.sender().property("jatek"):
                     return jatek2
-        jatek=temp()
+        jatek=jatekneve()
         self.kivalasztott_jatek_neve=QLabel(f"{jatek['jatek_neve']}-hoz való fogadás:",self)
         self.mylayout.addWidget(self.kivalasztott_jatek_neve,0,1,1,2)
         self.kivalasztott_jatek_neve.setObjectName("fogadasi_statisztika_cim")

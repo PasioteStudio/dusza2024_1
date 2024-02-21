@@ -11,9 +11,9 @@ A program a Dusza Árpád Országos Programozói Emlékverseny 2023/2024 miatt k
  ![image](https://github.com/atemzy/dusza2024_1/assets/43964339/5fbd4421-c8c4-40e7-8e26-25e1ec2ee146)
 # Fejlesztői dokumentáció:
 ## A kezelo.py-ban található:
-> Minden logikai függvény, például az egyes bejelentkezések, regisztrációk jóváírása. Az összes játék létrehozásának, lezárásának, fogadás leadásának a hitelesítése. De az összes ahhoz kapcsolható metódus is, mint a dinamikus szorzó, az egyes statisztikák eredményei, stb.
+> Minden logikai függvény, például az egyes bejelentkezések, regisztrációk jóváírása. Az összes játék létrehozásának, lezárásának, fogadás leadásának a hitelesítése. De az összes ahhoz kapcsolható metódus is, mint a dinamikus szorzó, az egyes statisztikák eredményei, jelszó titkosítása, elrejtése, összehasonlítása, stb.
 ## A gui.py-ban van:
-> Minden megjelenítés, hogy hogyan épüljön fel az alkalmazás, a gombok, a megjelenítés elrendezése, stb.
+> Minden megjelenítés, hogy hogyan épüljön fel az alkalmazás, a gombok kinézete, funkcionalitása, a megjelenítés elrendezése, stb.
 ## A gui.css-ben van:
 > Minden stílus leírás, hogy hogyan nézzen ki.
 ## Használt technológiák:
@@ -26,4 +26,4 @@ A jelszavakat titkosítva mentjük le.
 Szükséges volt a felhasználóbarát felület létrehozásának céljából.
 a program beüzemelésének rövid leírását a zsűri számára,
 ## A program beüzemlésének rövid leírása:
-> Speciális rendszerkövetelmények nincsenek, Windows-on, MacOS-en, Linux-on is futtatható, de **Python** telepítése szükséges. A program elindításához be kell lépjünk a program mappájába (dusza) és a a `py gui.py` parancs begépelésével elindul.
+Speciális rendszerkövetelmények nincsenek, Windows-on, MacOS-en, Linux-on is futtatható, de **Python** telepítése szükséges. A program elindításához be kell lépjünk a program mappájába (dusza) és a a `py gui.py` parancs begépelésével elindul.
