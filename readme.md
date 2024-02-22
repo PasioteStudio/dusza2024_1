@@ -42,7 +42,7 @@ A program a Dusza Árpád Országos Programozói Emlékverseny 2023/2024 miatt k
 ```
 ## A kezelo.py-ban található:
 - Minden logikai függvény, például az egyes bejelentkezések, regisztrációk jóváírása. Az összes játék létrehozásának, lezárásának, fogadás leadásának a hitelesítése. De az összes ahhoz kapcsolható metódus is, mint a dinamikus szorzó, az egyes statisztikák eredményei, jelszó titkosítása, elrejtése, összehasonlítása, stb.
-- Dinamikus szorzó számítása, am^i^nek a képlete: 1+5/(2^k^-1)+o/k/5, ahol a "k" az összes fogadás az adott alany + eseményre, az "o" pedig az összes fogadás az adott játék bármelyik alany + eseményére.
+- Dinamikus szorzó számítása, aminek a képlete: 1+5/(2<sup>k</sup>-1)+o/k/5, ahol a "k" az összes fogadás az adott alany + eseményre, az "o" pedig az összes fogadás az adott játék bármelyik alany + eseményére.
 ## A gui.py-ban van:
 > Minden egyes oldal meghívása, hogy hogy épül fel az alkalmazás, a megjelenítés elrendezésének alaphelyzetbe állítása. Még a mindig megjelenített profil tulajdonságai is.
 ## A felhasznalo.py-ban van:
