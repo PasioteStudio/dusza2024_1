@@ -18,7 +18,7 @@ A program a Dusza Árpád Országos Programozói Emlékverseny 2023/2024 miatt k
  ![Képernyőkép 2024-02-22 094133](https://github.com/atemzy/dusza2024_1/assets/43964339/dd6e3bbf-a4a9-4654-b238-695cbb5f5a92)
   használható.
 # Fejlesztői dokumentáció:
-## A fájl struktúra kinézete:
+## A fájlstruktúra kinézete:
 ```
 ├── forrasok
 │   ├── kepek
@@ -41,7 +41,7 @@ A program a Dusza Árpád Országos Programozói Emlékverseny 2023/2024 miatt k
 └── eredmenyek.txt
 ```
 ## A kezelo.py-ban található:
-- Minden logikai függvény, például az egyes bejelentkezések, regisztrációk jóváírása. Az összes játék létrehozásának, lezárásának, fogadás leadásának a hitelesítése. De az összes ahhoz kapcsolható metódus is, mint a dinamikus szorzó, az egyes statisztikák eredményei, jelszó titkosítása, elrejtése, összehasonlítása, stb.
+- Minden logikai függvény, például az egyes bejelentkezések, regisztrációk jóváírása. Az összes játék létrehozásának, lezárásának, fogadás leadásának a hitelesítése. De az összes ahhoz kapcsolható metódus is, mint az egyes statisztikák eredményei, jelszó titkosítása, elrejtése, összehasonlítása **hashlib** külső könyvtárral, stb.
 - Dinamikus szorzó számítása, aminek a képlete: 1+5/(2<sup>k</sup>-1)+o/k/5, ahol a "k" az összes fogadás az adott alany + eseményre, az "o" pedig az összes fogadás az adott játék bármelyik alany + eseményére.
 ## A gui.py-ban van:
 > Minden egyes oldal meghívása, hogy hogy épül fel az alkalmazás, a megjelenítés elrendezésének alaphelyzetbe állítása. Még a mindig megjelenített profil tulajdonságai is.
@@ -65,6 +65,5 @@ A jelszavakat titkosítva mentjük le.
 ### **PyQt5:**
 *Lehetővé teszi az átlátható grafikus felület használatát.*
 Szükséges volt a felhasználóbarát felület létrehozásának céljából.
-a program beüzemelésének rövid leírását a zsűri számára,
 ## A program beüzemlésének rövid leírása:
-Speciális rendszerkövetelmények nincsenek, Windows-on, MacOS-en, Linux-on is futtatható, de **Python** telepítése szükséges. A program elindításához be kell lépjünk a program mappájába (dusza) és a a `py gui.py` parancs begépelésével elindul.
+Speciális rendszerkövetelmények nincsenek, Windows-on, MacOS-en, Linux-on is futtatható, de **Python** telepítése szükséges. A program elindításához indítsuk el (dupla kattintással) a **start.bat** fájlt, ha Windows gépünk van, a **start.sh** fájlt, ha MacOS vagy Linux gépünk van.
