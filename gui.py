@@ -8,7 +8,6 @@ import ui.szervezo as szervezo
 import ui.fogado as fogado
 import ui.lekerdezes as lekerdezes
 import ui.felhasznalo as felhasznalo
-
 class MyWindow(QWidget):
     def __init__(self):
         self.resizeWidgets=[]
@@ -18,36 +17,27 @@ class MyWindow(QWidget):
         self.foCSS=css
         super().__init__()
         self.initUI()
-
     def initUI(self):
-        
         # Layout létrehozása
         self.mylayout = QGridLayout(self)  
         self.mylayout.setObjectName("container")
-        
         # Layout hozzáadása a main window-hoz
         self.setLayout(self.mylayout)
-        
+        #Köszöntés oldal
         self.main()
-
         # Képernyő méretei és pozíciója
         xCoord = 100
         yCoord = 100
         winWidht = 300
         winHeight = 150
         self.setGeometry(xCoord, yCoord, winWidht, winHeight)
-
         # Képernyő címe
         self.setWindowTitle('Fogadás managger 2000')
-        
-        
         icon_path="forrasok/kepek/icon.jpg"
         self.setWindowIcon(QtGui.QIcon(icon_path))
         self.showMaximized() 
-    
     def main(self):
         koszontes(self)
-
     def lekerdezes(self):
         lekerdezes.lekerdezes(self)
     def regisztracios_oldal(self):
@@ -89,7 +79,6 @@ class MyWindow(QWidget):
     def mindig_latszik_belepve(self, felhasznalonev:str):
         nev=kezelo.felhasznalo_neve(felhasznalonev)
         pont=int(kezelo.dinamikusPontSzamolás(felhasznalonev))
-        
         self.pont = QLabel(f"Pontszám: {pont}", self)
         self.pont.setObjectName("profil_pontszam")
         self.felhasznalonev = QLabel(f"Név: {felhasznalonev}", self)
@@ -108,7 +97,6 @@ class MyWindow(QWidget):
         self.ures.setObjectName("ures")
         
         self.profil=QGridLayout(self)
-        
         self.profil.addWidget(self.kep,1,0,2,1,QtCore.Qt.AlignmentFlag.AlignCenter)
         self.profil.addWidget(self.hatter2,0,0,9,1)
         self.profil.addWidget(self.pont,3,0,1,1,QtCore.Qt.AlignmentFlag.AlignBottom)
@@ -121,7 +109,6 @@ class MyWindow(QWidget):
         self.mylayout.addLayout(self.profil,0,0,8,1)
         self.hatter2.show()
         self.hatter2.lower()
-        
         return nev
     def resizeEvent(self, event):
         self.mivek=[int(self.frameGeometry().size().width()/2)]

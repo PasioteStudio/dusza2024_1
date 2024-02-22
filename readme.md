@@ -66,4 +66,4 @@ A jelszavakat titkosítva mentjük le.
 *Lehetővé teszi az átlátható grafikus felület használatát.*
 Szükséges volt a felhasználóbarát felület létrehozásának céljából.
 ## A program beüzemlésének rövid leírása:
-Speciális rendszerkövetelmények nincsenek, Windows-on, MacOS-en, Linux-on is futtatható, de **Python** telepítése szükséges. A program elindításához indítsuk el (dupla kattintással) a **start.bat** fájlt, ha Windows gépünk van, a **start.sh** fájlt, ha MacOS vagy Linux gépünk van.
+Speciális rendszerkövetelmények nincsenek, Windows-on, MacOS-en, Linux-on is futtatható, de **Python** telepítése szükséges. A program elindításához indítsa el (dupla kattintással) a **start.bat** fájlt, ha Windows gépe van, a **start.sh** fájlt, ha MacOS vagy Linux gépe van.
