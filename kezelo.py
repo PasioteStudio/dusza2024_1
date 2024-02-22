@@ -10,7 +10,7 @@ max_jateknev_hossz=50
 max_alany_hossz=50
 max_esemeny_hossz=50
 def egyedi_jatek_nev(jatek_neve:str)->bool:
-    fajl=open("jatekok.txt","r",encoding="utf8")
+    fajl=open("jatekok.txt","r+",encoding="utf8")
     sorok=fajl.readlines()
     fajl.close()
     for sor in sorok:
@@ -20,7 +20,7 @@ def egyedi_jatek_nev(jatek_neve:str)->bool:
                 return False
     return True
 def fogadott_e_mar(nev:str,jatek_neve:str,alany:str,esemeny:str)->bool:
-    fajl=open("fogadasok.txt","r",encoding="utf8")
+    fajl=open("fogadasok.txt","r+",encoding="utf8")
     sorok=fajl.readlines()
     fajl.close()
     for sor in sorok:
@@ -30,7 +30,7 @@ def fogadott_e_mar(nev:str,jatek_neve:str,alany:str,esemeny:str)->bool:
     return False
 def le_van_e_zarva_osszes_jatekot_vissza_adja()->list:
     elerheto_jatekok = []
-    fajl=open("jatekok.txt","r",encoding="utf8")
+    fajl=open("jatekok.txt","r+",encoding="utf8")
     sorok = fajl.readlines()
     fajl.close()
     talalt=False
@@ -69,7 +69,7 @@ def le_van_e_zarva_osszes_jatekot_vissza_adja()->list:
                     alanyok=[]
     return elerheto_jatekok
 def eredmeny_jatekhoz(jatek_neve:str):
-    fajl=open("eredmenyek.txt","r",encoding="utf8")
+    fajl=open("eredmenyek.txt","r+",encoding="utf8")
     sorok = fajl.readlines()
     fajl.close()
     talalt=False
@@ -101,16 +101,16 @@ def eredmeny_jatekhoz(jatek_neve:str):
         eredmeny = {}
     return eredmeny
 def atirni_egy_sort(fajl_neve,hanyadik,sor):
-    fajl=open(fajl_neve,"r",encoding="utf8")
+    fajl=open(fajl_neve,"r+",encoding="utf8")
     sorok=fajl.readlines()
     sorok[hanyadik]=sor
     fajl.close()
-    fajl=open(fajl_neve,"w",encoding="utf8")
+    fajl=open(fajl_neve,"w+",encoding="utf8")
     fajl.write("".join(sorok))
     fajl.close()
 def dinamikusPontSzamolás(fogado_fel:str):
     alap_pont=100
-    fajl=open("fogadasok.txt","r",encoding="utf8")
+    fajl=open("fogadasok.txt","r+",encoding="utf8")
     sorok=fajl.readlines()
     fajl.close()
     for sor in sorok:
@@ -126,14 +126,14 @@ def haVanoszpontszamEgyJatekhoz(jatek_nev:str,alany:str,esemeny:str):
     osszpontszam=0
     havaneredmeny=eredmeny_jatekhoz(jatek_nev)
     if(havaneredmeny!={}):
-        fajl=open("fogadasok.txt","r",encoding="utf8")
+        fajl=open("fogadasok.txt","r+",encoding="utf8")
         sorok=fajl.readlines()
         fajl.close()
         for sor in sorok:
             reszek=sor.strip().split(";")
             if(reszek[1] == jatek_nev and reszek[3] == alany and reszek[4] == esemeny and reszek[5] == havaneredmeny[alany][esemeny]["eredmeny"]):
                 osszpontszam+=havaneredmeny[alany][esemeny]["szorzo"]*int(reszek[2])
-    return osszpontszam
+    return int(osszpontszam)
 def jelszo_rejtese(input:QLineEdit,kezdeti_felirat:str):
     sorozat=0
     if input.placeholderText() == kezdeti_felirat:
@@ -203,7 +203,7 @@ def benyujtott_regisztracio(felhasznalo_nev_input:QLineEdit,jelszo_input:QLineEd
         return f"Túl rövid felhasznalónév, min: {min_felhasznalonev_hossz}"
     elif len(felhasznalo_nev)>max_felhasznalonev_hossz:
         return f"Túl hosszú felhasznalónév, max: {max_felhasznalonev_hossz}"
-    fajl = open("felhasznalok.txt","r",encoding="utf8")
+    fajl = open("felhasznalok.txt","r+",encoding="utf8")
     sorok=fajl.readlines()
     fajl.close()
     egyedi=True
@@ -221,7 +221,7 @@ def benyujtott_regisztracio(felhasznalo_nev_input:QLineEdit,jelszo_input:QLineEd
         return f"Túl rövid jelszó (min:{min_jelszo_hossz})"
     if jelszo != megerosito_jelszo_input.placeholderText():
         return "Nem egyezik meg a jelszó!"
-    fajl = open("felhasznalok.txt","a",encoding="utf8")
+    fajl = open("felhasznalok.txt","a+",encoding="utf8")
     fajl.write(f"{felhasznalo_nev};{jelszo_titkositasa(jelszo)};{felhasznalo_nev}\n") #FONTOS: az 0. a felhasznalonev, megváltoztathatatlan, a 2. a megjelenített név
     fajl.close()
     return True
@@ -231,7 +231,7 @@ def benyujtott_bejelentkezes(input_felhasznalonev:QLineEdit,input_jelszo:QLineEd
         jelszo = jelszo_titkositasa(input_jelszo.text())
     else:
         jelszo = jelszo_titkositasa(input_jelszo.placeholderText())
-    fajl=open("felhasznalok.txt","r",encoding="utf8")
+    fajl=open("felhasznalok.txt","r+",encoding="utf8")
     sorok=fajl.readlines()
     fajl.close()
     talalt=False
@@ -257,7 +257,7 @@ def benyujtott_eredmeny(jatek:dict,alanyok_es_esemyenek_messages:list):
         "jatek_nev":jatek["jatek_neve"],
         "eredmenyek":eredmenyek
     }
-    fajl=open("eredmenyek.txt","a",encoding="utf8")
+    fajl=open("eredmenyek.txt","a+",encoding="utf8")
     fajl.write(eredmeny_txt_be["jatek_nev"]+"\n")
     szorzo=0
     for eredmeny in eredmeny_txt_be["eredmenyek"]:
@@ -320,7 +320,7 @@ def benyujtott_jatek_letrehozasa(felhasznalonev:str,megnevezes_input:QLineEdit,o
             return f"{esemeny.text()} már volt!"
     if len(esemenyek)<2:
         return "Kevesebb, mint 2 esemény!"
-    fajl=open("jatekok.txt","a",encoding="utf8")
+    fajl=open("jatekok.txt","a+",encoding="utf8")
     fajl.write(f"{felhasznalonev};{megnevezes_input.text()};{len(alanyok)};{len(esemenyek)}\n")
     for alany in alanyok:
         fajl.write(f"{alany}\n")
@@ -340,7 +340,7 @@ def benyujtott_fogadas(felhasznalonev:str,jatek:dict,kivalasztott_alany_input:QC
         return f"Nincs {int(tet_input.text())} pontod!"
     elif(int(tet_input.text())<0):
         return "Legalább tegyél fel valamennyi pontot!"
-    file=open("fogadasok.txt","a",encoding="utf8")
+    file=open("fogadasok.txt","a+",encoding="utf8")
     file.write(f"{felhasznalonev};{jatek['jatek_neve']};{int(tet_input.text())};{kivalasztott_alany_input.currentText()};{kivalasztott_esemeny_input.currentText()};{ertek_input.text()}\n")
     file.close()
     return True
@@ -351,7 +351,7 @@ def ranglista_guihoz():
         "igazi_helyezes":[], #a tényleges helyezés, nem az index (pl ha ugyanaz a pontszáma van több játékosnak, akkor ők azonos helyen (pl 2.-2.), az utánuk lévő nem egyből fog jönni (pl nem 3., hanem 4. lesz))
         "ideiglenes_nev_es_pontszam":[]#Objektumok, amik tartalmazzák a nevet és a hozzátartozó pontot, ennek a segítségével lehet hozzárendelni a nevet a pontokhoz
     }
-    fajl=open("fogadasok.txt","r",encoding="utf8")
+    fajl=open("fogadasok.txt","r+",encoding="utf8")
     sorok=fajl.readlines()
     fajl.close()
     #Végigmegyünk a fogadásokon és kiszámoljuk a játékosok pontszámát, majd az összes adat, amit tudunk a jatekosok objektumhoz adunk (pontszam és ideiglenes_nev_es_pontszam)
@@ -392,7 +392,7 @@ def ranglista_guihoz():
                 sorozat=0
     return jatekosok
 def jatek_statisztika_guihoz():
-    fajl=open("jatekok.txt","r",encoding="utf8")
+    fajl=open("jatekok.txt","r+",encoding="utf8")
     sorok = fajl.readlines()
     fajl.close()
     jatekok=[]
@@ -404,7 +404,7 @@ def jatek_statisztika_guihoz():
             nyeremenyek_osszpontszama=0
             megnezett_alany_esemeny=[]
             jatek_nev=reszek[1]
-            fajl2=open("fogadasok.txt","r",encoding="utf8")
+            fajl2=open("fogadasok.txt","r+",encoding="utf8")
             sorok2=fajl2.readlines()
             fajl2.close()
             for sor2 in sorok2:
@@ -425,7 +425,7 @@ def jatek_statisztika_guihoz():
             continue
     return jatekok
 def fogadasi_statisztika_guihoz(jatek_nev_megadott:str):
-    fajl=open("jatekok.txt","r",encoding="utf8")
+    fajl=open("jatekok.txt","r+",encoding="utf8")
     sorok = fajl.readlines()
     fajl.close()
     talalt=False
@@ -453,7 +453,7 @@ def fogadasi_statisztika_guihoz(jatek_nev_megadott:str):
                 if(len(esemenyek)==esemenyek_szama):
                     #Ez az utolsó sora a játéknak a jatekok.txt-ben
                     talalt=False
-                    fajl2=open("fogadasok.txt","r",encoding="utf8")
+                    fajl2=open("fogadasok.txt","r+",encoding="utf8")
                     sorok2=fajl2.readlines()
                     fajl2.close()
                     for alany in alanyok:
@@ -476,7 +476,7 @@ def fogadasi_statisztika_guihoz(jatek_nev_megadott:str):
                             
     return jatek
 def osszesJatek():
-    fajl=open("jatekok.txt","r",encoding="utf8")
+    fajl=open("jatekok.txt","r+",encoding="utf8")
     sorok=fajl.readlines()
     fajl.close()
     jatekok=[]
@@ -498,7 +498,7 @@ def fogadasiStatisztikaKivalasztottjatekInputahoz(kivalasztott_jatek_input:QComb
         alany_es_esemenyek_label.setObjectName("jatekstatisztika_label")
         osszesAlanyEsemeny.addWidget(alany_es_esemenyek_label)
 def felhasznalo_neve(felhasznalonev:str):
-    fajl=open("felhasznalok.txt","r",encoding="utf8")
+    fajl=open("felhasznalok.txt","r+",encoding="utf8")
     sorok=fajl.readlines()
     fajl.close()
     for sor in sorok:
@@ -511,7 +511,7 @@ def benyujtott_profilbeallitasok(felhasznalonev:str,megjelenitett_nev_input:QLin
         return "Túl hosszú név!"
     elif len(megjelenitett_nev_input.text())<min_nev_hossz:
         return "Túl rövid név!"
-    fajl=open("felhasznalok.txt","r",encoding="utf8")
+    fajl=open("felhasznalok.txt","r+",encoding="utf8")
     sorok=fajl.readlines()
     fajl.close()
     for id,sor in enumerate(sorok):
@@ -521,7 +521,7 @@ def benyujtott_profilbeallitasok(felhasznalonev:str,megjelenitett_nev_input:QLin
             return True
     return "Valami nem jó!"
 def dinamikusszorzo_frissitese(jatek_neve:str):
-    fajl=open("fogadasok.txt","r",encoding="utf8")
+    fajl=open("fogadasok.txt","r+",encoding="utf8")
     sorok=fajl.readlines()
     fajl.close()
     fogadasok={}
@@ -536,7 +536,7 @@ def dinamikusszorzo_frissitese(jatek_neve:str):
     #Ki olvastuk a fogadasok.txt fájlból, hogy mennyi fogadás van egy-egy alany és eseményen az adott játékban
 
     
-    fajl2=open("eredmenyek.txt","r",encoding="utf8")
+    fajl2=open("eredmenyek.txt","r+",encoding="utf8")
     sorok2=fajl2.readlines()
     fajl2.close()
     talalt=False

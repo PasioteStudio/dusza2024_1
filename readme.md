@@ -4,17 +4,34 @@ A program a Dusza Árpád Országos Programozói Emlékverseny 2023/2024 miatt k
  1. Python telepítése kötelező a program futtatásához.
  2. FONTOS: Mindig lépjünk be a program mappájába(dusza), onnan indítsuk el
  3.  Hogy futtassuk el kell indítanunk a gui.py-t (`py gui.py`)
-  -  A programot játékok készítésére:
+  -  A program játékok készítésére:
  ![image](https://github.com/atemzy/dusza2024_1/assets/43964339/f04dfd08-e77d-453c-9195-a2016d67ba9b)
   - És annak lezárására:
  ![Képernyőkép 2024-02-21 181554](https://github.com/atemzy/dusza2024_1/assets/43964339/14312892-f38e-449c-9082-87c856958354)
   - Fogadás leadására:
  ![Képernyőkép 2024-02-21 181541](https://github.com/atemzy/dusza2024_1/assets/43964339/d0038e23-d0d7-456a-b23e-90abc0c55291)
+  - Ranglista megtekintésére:
+ ![Képernyőkép 2024-02-22 093952](https://github.com/atemzy/dusza2024_1/assets/43964339/ce64cf5d-833d-4f31-95c8-a425d898279a)
+  - Játék statisztika megtekintésére:
+ ![Képernyőkép 2024-02-22 094111](https://github.com/atemzy/dusza2024_1/assets/43964339/e6828472-3eca-4b9b-8206-a6e6b474c26b)
+  - Fogadási statisztika megtekintésére:
+ ![Képernyőkép 2024-02-22 094133](https://github.com/atemzy/dusza2024_1/assets/43964339/dd6e3bbf-a4a9-4654-b238-695cbb5f5a92)
+  használható.
 # Fejlesztői dokumentáció:
 ## A kezelo.py-ban található:
 > Minden logikai függvény, például az egyes bejelentkezések, regisztrációk jóváírása. Az összes játék létrehozásának, lezárásának, fogadás leadásának a hitelesítése. De az összes ahhoz kapcsolható metódus is, mint a dinamikus szorzó, az egyes statisztikák eredményei, jelszó titkosítása, elrejtése, összehasonlítása, stb.
 ## A gui.py-ban van:
-> Minden megjelenítés, hogy hogyan épüljön fel az alkalmazás, a gombok kinézete, funkcionalitása, a megjelenítés elrendezése, stb.
+> Minden egyes oldal meghívása, hogy hogy épül fel az alkalmazás, a megjelenítés elrendezésének alaphelyzetbe állítása. Még a mindig megjelenített profil tulajdonságai is.
+## A felhasznalo.py-ban van:
+> A bejelentkezés, regisztráció, bejelentkezett oldal, és a profil beállítások oldal megjelenítése. 
+## A fogado.py-ban van:
+> A fogadás leadása, fogadó kezdő oldalához szükséges megjelenítés. 
+## A szervezo.py-ban van:
+> A játék létrehozása, lezárása, szervező kezdő oldalához szükséges megjelenítés. 
+## A koszontes.py-ban van:
+> A program kezdőlapjának, azaz az első oldalának a megjelenítése.
+## A lekerdezes.py-ban van:
+> A lekérdezés kezdő oldala, a ranglista, játék statisztika, fogadási statisztika oldalának megjelenítése.
 ## A gui.css-ben van:
 > Minden stílus leírás, hogy hogyan nézzen ki.
 ## Használt technológiák:
