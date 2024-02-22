@@ -18,6 +18,26 @@ A program a Dusza Árpád Országos Programozói Emlékverseny 2023/2024 miatt k
  ![Képernyőkép 2024-02-22 094133](https://github.com/atemzy/dusza2024_1/assets/43964339/dd6e3bbf-a4a9-4654-b238-695cbb5f5a92)
   használható.
 # Fejlesztői dokumentáció:
+## A fájl struktúra kinézete:
+->kezelo.py
+->gui.py
+->fogadasok.txt
+->felhasznalok.txt
+->eredmenyek.txt
+->jatekok.txt
+->readme.md
+->ui:
+-->felhasznalo.py
+-->fogado.py
+-->szervezo.py
+-->koszontes.py
+-->lekerdezes.py
+->forrasok:
+-->kepek:
+--->icon.jpg
+--->token.png
+-->stilusok:
+--->gui.css
 ## A kezelo.py-ban található:
 > Minden logikai függvény, például az egyes bejelentkezések, regisztrációk jóváírása. Az összes játék létrehozásának, lezárásának, fogadás leadásának a hitelesítése. De az összes ahhoz kapcsolható metódus is, mint a dinamikus szorzó, az egyes statisztikák eredményei, jelszó titkosítása, elrejtése, összehasonlítása, stb.
 ## A gui.py-ban van:
