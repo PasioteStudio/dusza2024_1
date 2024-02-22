@@ -1,0 +1,5 @@
+Példa játék
+Példa Béla;Példa program teljesítési ideje;24;0
+Példa Béla;Példa program kimenetelének eredménye;Hello World;0
+Példa Ákos;Példa program teljesítési ideje;30;0
+Példa Ákos;Példa program kimenetelének eredménye;Hello World;0

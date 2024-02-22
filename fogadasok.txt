@@ -1,1 +1,2 @@
 Én;Allah megidézése;50;Béla;Alvás;20
+Sigmakik;Példa játék;25;Példa Béla;Példa program kimenetelének eredménye;Hello World

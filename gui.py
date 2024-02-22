@@ -1,15 +1,14 @@
 #Sigmakik
 import sys
 import kezelo
-
 from PyQt5 import QtGui,QtCore, QtWidgets
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QLabel, QApplication, QWidget, QPushButton, QLineEdit, QVBoxLayout,QHBoxLayout,QGridLayout,QMainWindow,QScrollArea,QAbstractScrollArea,QGroupBox,QComboBox
+from PyQt5.QtWidgets import QLabel, QApplication, QWidget, QPushButton, QLineEdit, QVBoxLayout,QGridLayout,QScrollArea,QGroupBox,QComboBox
 
 class MyWindow(QWidget):
     def __init__(self):
         self.profilok=[]
-        with open('gui.css', 'r') as file:
+        with open('resources/styles/gui.css', 'r') as file:
             css = file.read()
         self.foCSS=css
         super().__init__()
@@ -17,7 +16,6 @@ class MyWindow(QWidget):
 
     def initUI(self):
         
-
         # Layout létrehozása
         self.mylayout = QGridLayout(self)  
         self.mylayout.setObjectName("container")
@@ -39,7 +37,7 @@ class MyWindow(QWidget):
         self.setWindowTitle('Fogadás managger 2000')
         
         
-        icon_path="assets/icon.jpg"
+        icon_path="resources/images/icon.jpg"
         self.setWindowIcon(QtGui.QIcon(icon_path))
         self.showMaximized() 
     
@@ -458,7 +456,6 @@ class MyWindow(QWidget):
         def jatekneve():  
             for jatek2 in map(lambda x: kezelo.jatekot_felhasznalo_szervezte(x,felhasznalonev), kezelo.le_van_e_zarva_osszes_jatekot_vissza_adja()):
                 if jatek2["jatek_neve"]==self.sender().property("jatek"):
-                    print("sff"+jatek2["jatek_neve"])
                     return jatek2
         jatek = jatekneve()
         self.jatek_neve=QLabel(f"{jatek['jatek_neve']}-hoz való eredmények:")
@@ -613,7 +610,6 @@ class MyWindow(QWidget):
             self.jatekos_label = QLabel(f"{jatekosok['igazi_helyezes'][id]}. helyen: {jatekos}, {jatekosok['pontszam_sorrendben'][id]} ponttal",self.osszesJatekosTarolo)
             self.jatekos_label.setMaximumHeight(100)
             if id==0:
-                print(id)
                 self.jatekos_label.setObjectName("arany")
             else:
                 self.jatekos_label.setObjectName("feher")
@@ -713,11 +709,8 @@ class MyWindow(QWidget):
         self.Vissza.clicked.connect(lambda: self.bejelentkezett_oldal(felhasznalonev))
         self.mylayout.addWidget(self.Vissza,3,1,5,1,QtCore.Qt.AlignmentFlag.AlignBottom)
     def resizeEvent(self, event):
-        print(self.frameGeometry().size())
         self.mivek=[int(self.frameGeometry().size().width()/2)]
-        print("Window has been resized")
         for element in self.resizeWidgets:
-            print(len(self.resizeWidgets))
             element["elem"].setFixedWidth(self.mivek[element["mive"]])
         QWidget.resizeEvent(self, event)
 if __name__ == '__main__':
@@ -725,6 +718,4 @@ if __name__ == '__main__':
     # képernyő létrehozása
     window = MyWindow()
     window.show()
-    
-    
     sys.exit(app.exec_())

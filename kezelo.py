@@ -1,164 +1,14 @@
 #Sigmakik
 import hashlib
 from PyQt5.QtWidgets import QLineEdit,QGridLayout,QWidget,QGroupBox,QComboBox,QLabel,QVBoxLayout,QScrollArea
-def szorzo_frissitese(jatek_neve:str):
-    fajl=open("fogadasok.txt","r",encoding="utf8")
-    sorok=fajl.readlines()
-    fajl.close()
-    fogadasok={}
-    for sor in sorok:
-        reszek=sor.strip().split(";")
-        if(reszek[1]==jatek_neve):
-            fogadasok[reszek[3]+reszek[4]]=0
-    for sor in sorok:
-        reszek=sor.strip().split(";")
-        if(reszek[1]==jatek_neve):
-            fogadasok[reszek[3]+reszek[4]]+=1
-    #Ki olvastuk a fogadasok.txt fájlból, hogy mennyi fogadás van egy-egy alany és eseményen az adott játékban
-
-    
-    fajl2=open("eredmenyek.txt","r",encoding="utf8")
-    sorok2=fajl2.readlines()
-    fajl2.close()
-    talalt=False
-    #Végigmegyünk az eredmenyek.txt fájlon, hogy a szorzó képletével végigszámolva beírjuk azt
-    for id,sor2 in enumerate(sorok2):
-        reszek2=sor2.strip().split(";")
-        if(talalt):
-            if reszek2[0]+reszek2[1] in fogadasok.keys():
-                k=fogadasok[reszek2[0]+reszek2[1]]
-                szorzo= round(1 + (5/(2 ** k - 1)),2)
-            else:
-                k=0
-                szorzo=0
-            if(k==0):
-                szorzo=0
-            
-            atirni_egy_sort("eredmenyek.txt",id,f"{reszek2[0]};{reszek2[1]};{reszek2[2]};{szorzo}\n")
-        if(jatek_neve == reszek2[0]):
-            if not len(reszek2) > 1:
-                talalt=True
-def ranglista():
-    jatekosok={
-        "pontszam_sorrendben":[], #Ide tesszük bele az összes játékos összesített pontszámát. (Azért kell külön, hogy a sort() funkciót és a reverse() funkciót lehessen könnyedén használni. )
-        "nev_sorrendben":[], #Ide tesszük majd bele úgy a játékosok nevét, hogy a hozzá tartozó pontszámmal megegyező indexen legyen. (pl: 50pont a 3. indexen van, akkor a játékos neve is ott lesz)
-        "igazi_helyezes":[], #a tényleges helyezés, nem az index (pl ha ugyanaz a pontszáma van több játékosnak, akkor ők azonos helyen (pl 2.-2.), az utánuk lévő nem egyből fog jönni (pl nem 3., hanem 4. lesz))
-        "ideiglenes_nev_es_pontszam":[]#Objektumok, amik tartalmazzák a nevet és a hozzátartozó pontot, ennek a segítségével lehet hozzárendelni a nevet a pontokhoz
-    }
-    fajl=open("fogadasok.txt","r",encoding="utf8")
-    sorok=fajl.readlines()
-    fajl.close()
-    #Végigmegyünk a fogadásokon és kiszámoljuk a játékosok pontszámát, majd az összes adat, amit tudunk a jatekosok objektumhoz adunk (pontszam és ideiglenes_nev_es_pontszam)
-    for sor in sorok:
-        reszek=sor.strip().split(";")
-        if(not {"nev":reszek[0],"pont":dinamikusPontSzamolás(reszek[0])} in jatekosok["ideiglenes_nev_es_pontszam"]):
-            pont=round(dinamikusPontSzamolás(reszek[0]))
-            jatekosok["pontszam_sorrendben"].append(pont)
-            jatekosok["ideiglenes_nev_es_pontszam"].append({
-                "nev":reszek[0],
-                "pont":pont
-            })
-    #Sorrendbe rendezzük a pontokat és megfordítjuk, hogy csökkenő sorrenben legyen.
-    jatekosok["pontszam_sorrendben"].sort()
-    jatekosok["pontszam_sorrendben"].reverse()
-    #Végigmegyünk a pontokon (csökkenő sorrendben) és hozzárendeljük mindegyikhez a megfelelő játékost.
-    for pont in jatekosok["pontszam_sorrendben"]:
-        for jatekos in jatekosok["ideiglenes_nev_es_pontszam"]:
-            if(not jatekos["nev"] in jatekosok["nev_sorrendben"]):
-                if(jatekos["pont"]==pont):
-                    jatekosok["nev_sorrendben"].append(jatekos["nev"])
-                    break
-    #Végigmegyünk a névsorrenden és megnézzük, hogyha megegyezik a pontszáma az előzővel, akkor meg kell egyeznie a helyezése is az előzőével és a sorozatot növeljük, hogy a következő, akinek nem annyi a pontja az sokkal kisebb helyezést érjen el.
-    sorozat=0
-    for id,jatekos in enumerate(jatekosok["nev_sorrendben"]):
-        if id == 0:
-            jatekosok["igazi_helyezes"].append(1)
-        else:
-            if jatekosok["pontszam_sorrendben"][id] == jatekosok["pontszam_sorrendben"][id-1]:
-                jatekosok["igazi_helyezes"].append(jatekosok["igazi_helyezes"][id-1])
-                sorozat+=1
-            else:
-                jatekosok["igazi_helyezes"].append(jatekosok["igazi_helyezes"][id-1]+1+sorozat)
-                sorozat=0
-    #Kiírjuk
-    for id,jatekos in enumerate(jatekosok["nev_sorrendben"]):
-        print(f"{jatekosok['igazi_helyezes'][id]}. helyen: {jatekos}, {jatekosok['pontszam_sorrendben'][id]} ponttal")
-    pass
-def jatek_statisztika():
-    fajl=open("jatekok.txt","r",encoding="utf8")
-    sorok = fajl.readlines()
-    fajl.close()
-    for sor in sorok:
-        reszek=sor.strip().split(";")
-        if len(reszek) > 1:
-            fogadasok_szama=0
-            feltett_tetek_osszpontszama=0
-            nyeremenyek_osszpontszama=0
-            megnezett_alany_esemeny=[]
-            jatek_nev=reszek[1]
-            fajl2=open("fogadasok.txt","r",encoding="utf8")
-            sorok2=fajl2.readlines()
-            fajl2.close()
-            for sor2 in sorok2:
-                reszek2=sor2.strip().split(";")
-                if(reszek2[1] == jatek_nev):
-                    fogadasok_szama+=1
-                    feltett_tetek_osszpontszama+=int(reszek2[2])
-                    if(not f"{reszek2[3]}{reszek2[4]}" in megnezett_alany_esemeny):
-                        nyeremenyek_osszpontszama+=haVanoszpontszamEgyJatekhoz(jatek_nev,reszek2[3],reszek2[4])
-                        megnezett_alany_esemeny.append(f"{reszek2[3]}{reszek2[4]}")
-            print(f"{jatek_nev}-ban/-ben")
-            print(f"    {fogadasok_szama}db fogadása van")
-            print(f"    {feltett_tetek_osszpontszama} összpontszáma van a feltett téteknek a játékhoz")
-            print(f"    {nyeremenyek_osszpontszama} összpontszáma van a nyereményeknek a játékhoz")
-            
-        else:
-            continue
-    pass
-def fogadasi_statisztika(jatek_nev_megadott:str):
-    fajl=open("jatekok.txt","r",encoding="utf8")
-    sorok = fajl.readlines()
-    fajl.close()
-    talalt=False
-    alanyok=[]
-    alanyok_szama=0
-    esemenyek=[]
-    esemenyek_szama=0
-    print(f"{jatek_nev_megadott}-hoz statisztikák: ")
-    for sor in sorok:
-        reszek=sor.strip().split(";")
-        if len(reszek) > 1:
-            if(reszek[1] == jatek_nev_megadott):
-                talalt=True
-                alanyok_szama=int(reszek[2])
-                esemenyek_szama=int(reszek[3])
-        else:
-            if(talalt):
-                if(len(alanyok)<alanyok_szama):
-                    alanyok.append(reszek[0])
-                elif(len(esemenyek)<esemenyek_szama):
-                    esemenyek.append(reszek[0])
-                if(len(esemenyek)==esemenyek_szama):
-                    #Ez az utolsó sora a játéknak a jatekok.txt-ben
-                    talalt=False
-                    fajl2=open("fogadasok.txt","r",encoding="utf8")
-                    sorok2=fajl2.readlines()
-                    fajl2.close()
-                    for alany in alanyok:
-                        for esemeny in esemenyek:
-                            fogadasok_szama=0
-                            feltett_tetek_osszpontszama=0
-                            nyeremenyek_osszpontszama=haVanoszpontszamEgyJatekhoz(jatek_nev_megadott,alany,esemeny)
-                            for sor2 in sorok2:
-                                reszek2=sor2.strip().split(";")
-                                if(reszek2[1] == jatek_nev_megadott and reszek2[3] == alany and reszek2[4] == esemeny):
-                                    fogadasok_szama+=1
-                                    feltett_tetek_osszpontszama+=int(reszek2[2])
-                            print(f"    {alany}+{esemeny}-hez/höz adatok:")
-                            print(f"        fogadások száma:{fogadasok_szama}")
-                            print(f"        feltett tétek összpontszáma:{feltett_tetek_osszpontszama}")
-                            print(f"        nyeremények összpontszáma:{nyeremenyek_osszpontszama}")
-    pass
+min_jelszo_hossz=8
+max_nev_hossz=15
+min_nev_hossz=4
+max_felhasznalonev_hossz=15
+min_felhasznalonev_hossz=4
+max_jateknev_hossz=50
+max_alany_hossz=50
+max_esemeny_hossz=50
 def egyedi_jatek_nev(jatek_neve:str)->bool:
     fajl=open("jatekok.txt","r",encoding="utf8")
     sorok=fajl.readlines()
@@ -178,13 +28,6 @@ def fogadott_e_mar(nev:str,jatek_neve:str,alany:str,esemeny:str)->bool:
         if(nev==reszek[0] and jatek_neve == reszek[1] and alany == reszek[3] and esemeny == reszek[4]):
             return True
     return False
-def Szam_e(bekeres):
-    while True:
-        user_input = input(bekeres)
-        if user_input.isnumeric():
-            return int(user_input)
-        else:
-            continue
 def le_van_e_zarva_osszes_jatekot_vissza_adja()->list:
     elerheto_jatekok = []
     fajl=open("jatekok.txt","r",encoding="utf8")
@@ -291,20 +134,7 @@ def haVanoszpontszamEgyJatekhoz(jatek_nev:str,alany:str,esemeny:str):
             if(reszek[1] == jatek_nev and reszek[3] == alany and reszek[4] == esemeny and reszek[5] == havaneredmeny[alany][esemeny]["eredmeny"]):
                 osszpontszam+=havaneredmeny[alany][esemeny]["szorzo"]*int(reszek[2])
     return osszpontszam
-
-
-min_jelszo_hossz=8
-max_nev_hossz=15
-min_nev_hossz=4
-max_felhasznalonev_hossz=15
-min_felhasznalonev_hossz=4
-max_jateknev_hossz=50
-max_alany_hossz=50
-max_esemeny_hossz=50
-
-
 def jelszo_rejtese(input:QLineEdit,kezdeti_felirat:str):
-    print(input.text())
     sorozat=0
     if input.placeholderText() == kezdeti_felirat:
         input.setPlaceholderText("")
@@ -397,12 +227,10 @@ def benyujtott_regisztracio(felhasznalo_nev_input:QLineEdit,jelszo_input:QLineEd
     return True
 def benyujtott_bejelentkezes(input_felhasznalonev:QLineEdit,input_jelszo:QLineEdit):
     felhasznalonev = input_felhasznalonev.text()
-    print("Felh:", felhasznalonev)
     if input_jelszo.text().find("*") == -1:
         jelszo = jelszo_titkositasa(input_jelszo.text())
     else:
         jelszo = jelszo_titkositasa(input_jelszo.placeholderText())
-    print("Jelsz:", jelszo)
     fajl=open("felhasznalok.txt","r",encoding="utf8")
     sorok=fajl.readlines()
     fajl.close()
@@ -411,8 +239,6 @@ def benyujtott_bejelentkezes(input_felhasznalonev:QLineEdit,input_jelszo:QLineEd
     for sor in sorok:
         reszek=sor.strip().split(";")
         if felhasznalonev == reszek[0] and jelszo == reszek[1]:
-            print("Bejelentkeztél")
-            print(dinamikusPontSzamolás(felhasznalonev))
             nev=reszek[2]
             talalt=True
     if not talalt:
@@ -446,7 +272,6 @@ def plusAlanyokésEsemenyek(plusz_alany:int,plusz_esemeny:int,osszesAlany:QGridL
         sor=int(hany/4)
         oszlop=hany%4
         #Kiszámoljuk a sort és oszlopot, hogy ne egymás alá, de kettessével mellé is tegye
-        print(f"{sor},{oszlop},{hany},{len(alanyTarolo.children())}")
         uj_alany= QLineEdit(alanyTarolo)
         uj_alany.setPlaceholderText(f"alany")
         uj_alany.setFixedHeight(100)
@@ -724,9 +549,9 @@ def dinamikusszorzo_frissitese(jatek_neve:str):
     for id,sor2 in enumerate(sorok2):
         reszek2=sor2.strip().split(";")
         if(talalt):
+            o=osszes_fogadas_szama
             if reszek2[0]+reszek2[1] in fogadasok.keys():
                 k=fogadasok[reszek2[0]+reszek2[1]]
-                o=osszes_fogadas_szama
                 if k==0:
                     szorzo= round(1 + (5/(2 ** k - 1))+o/0.5/5,2)
                 else:
@@ -741,5 +566,3 @@ def dinamikusszorzo_frissitese(jatek_neve:str):
         if(jatek_neve == reszek2[0]):
             if not len(reszek2) > 1:
                 talalt=True
-
-

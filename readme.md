@@ -6,7 +6,8 @@ A program a Dusza Árpád Országos Programozói Emlékverseny 2023/2024 miatt k
  3.  Hogy futtassuk el kell indítanunk a gui.py-t (`py gui.py`)
   -  A programot játékok készítésére:
  ![image](https://github.com/atemzy/dusza2024_1/assets/43964339/f04dfd08-e77d-453c-9195-a2016d67ba9b)
-  - És annak lezárására
+  - És annak lezárására:
+ ![Képernyőkép 2024-02-21 181554](https://github.com/atemzy/dusza2024_1/assets/43964339/14312892-f38e-449c-9082-87c856958354)
   - Fogadás leadására:
  ![image](https://github.com/atemzy/dusza2024_1/assets/43964339/5fbd4421-c8c4-40e7-8e26-25e1ec2ee146)
 # Fejlesztői dokumentáció:
