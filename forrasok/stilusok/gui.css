@@ -107,7 +107,7 @@
 }
 
 #profil_kep {
-    background: url('resources/images/icon.jpg') no-repeat contain;
+    background: url('forrasok/kepek/icon.jpg') no-repeat contain;
     border: 1px solid black;
     border-radius: 150px !important;
 }
@@ -179,7 +179,7 @@ QComboBox {
 
 #JatekIcon {
     border: none;
-    background: url('resources/images/token.png') no-repeat contain;
+    background: url('forrasok/kepek/token.png') no-repeat contain;
     border-radius: 250px;
 }
 

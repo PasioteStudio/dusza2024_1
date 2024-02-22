@@ -3,3 +3,8 @@ Példa Béla
 Példa Ákos
 Példa program teljesítési ideje
 Példa program kimenetelének eredménye
+Sigmakik;Példa2;2;2
+Példa Béla
+Példa János
+Példa kimenetel
+Példa teljesítési idő

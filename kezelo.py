@@ -560,7 +560,10 @@ def dinamikusszorzo_frissitese(jatek_neve:str):
                 k=0
                 szorzo=0
             if(k==0):
-                szorzo=round(1+o/0,5/5,2)
+                if o == 0:
+                    szorzo=0
+                else:
+                    szorzo=round(1+o/0.5/5,2)
             
             atirni_egy_sort("eredmenyek.txt",id,f"{reszek2[0]};{reszek2[1]};{reszek2[2]};{szorzo}\n")
         if(jatek_neve == reszek2[0]):
