@@ -24,8 +24,8 @@ A program a Dusza Árpád Országos Programozói Emlékverseny 2023/2024 miatt k
 │   ├── kepek
 │   │   ├── token.png
 │   │   └── icon.jpg
-│   ├── stilusok
-│   │   └── gui.css
+│   └── stilusok
+│       └── gui.css
 ├── ui
 │   ├── koszontes.py
 │   ├── felhasznalo.py
