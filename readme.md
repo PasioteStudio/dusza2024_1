@@ -66,4 +66,4 @@ A jelszavakat titkosítva mentjük le.
 *Lehetővé teszi az átlátható grafikus felület használatát.*
 Szükséges volt a felhasználóbarát felület létrehozásának céljából.
 ## A program beüzemlésének rövid leírása:
-Speciális rendszerkövetelmények nincsenek, Windows-on, MacOS-en, Linux-on is futtatható, de **Python** és a PyQt5 külső python könyvtár telepítése és a szükséges. A program elindításához indítsa el (dupla kattintással) a **start.bat** fájlt, ha Windows gépe van, a **start.sh** fájlt, ha MacOS vagy Linux gépe van.
+Speciális rendszerkövetelmények nincsenek, Windows-on, MacOS-en, Linux-on is futtatható, de **Python** és a PyQt5 külső python könyvtár telepítése és a szükséges. A program elindításához indítsa el (dupla kattintással) a **start.bat** fájlt, ha Windows gépe van, a **start.sh** fájlt, ha MacOS vagy Linux gépe van. Ezek a fájlok segítenek letelepíteni a szükséges könyvtárakat-.
