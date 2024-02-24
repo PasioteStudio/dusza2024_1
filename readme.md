@@ -1,9 +1,9 @@
 # Bevezetés:
 A program a Dusza Árpád Országos Programozói Emlékverseny 2023/2024 miatt készülhetett el. A feladat egy fogadásos játék volt, ahol fogadni, játékot létrehozni, lezárni és a ranglistát, játék statisztikáját és fogadási statisztikáját lehet megtekinteni.
 # Felhasználói dokumentáció
- 1. Python telepítése kötelező a program futtatásához.
+ 1. Python telepítése és PyQt5 külső python könyvtár kötelező a program futtatásához.
  2. FONTOS: Mindig lépjünk be a program mappájába(dusza), onnan indítsuk el
- 3.  Hogy futtassuk el kell indítanunk a gui.py-t (`py gui.py`)
+ 3. Hogy futtassuk el kell indítanunk a gui.py-t (`py gui.py`)
   -  A program játékok készítésére:
  ![image](https://github.com/atemzy/dusza2024_1/assets/43964339/f04dfd08-e77d-453c-9195-a2016d67ba9b)
   - És annak lezárására:
@@ -41,7 +41,7 @@ A program a Dusza Árpád Országos Programozói Emlékverseny 2023/2024 miatt k
 └── eredmenyek.txt
 ```
 ## A kezelo.py-ban található:
-- Minden logikai függvény, például az egyes bejelentkezések, regisztrációk jóváírása. Az összes játék létrehozásának, lezárásának, fogadás leadásának a hitelesítése. De az összes ahhoz kapcsolható metódus is, mint az egyes statisztikák eredményei, jelszó titkosítása, elrejtése, összehasonlítása **hashlib** külső könyvtárral, stb.
+- Minden logikai függvény, például az egyes bejelentkezések, regisztrációk jóváírása. Az összes játék létrehozásának, lezárásának, fogadás leadásának a hitelesítése. De az összes ahhoz kapcsolható metódus is, mint az egyes statisztikák eredményei, jelszó titkosítása, elrejtése, összehasonlítása **hashlib** külső python könyvtárral, stb.
 - Dinamikus szorzó számítása, aminek a képlete: 1+5/(2<sup>k</sup>-1)+o/k/5, ahol a "k" az összes fogadás az adott alany + eseményre, az "o" pedig az összes fogadás az adott játék bármelyik alany + eseményére.
 ## A gui.py-ban van:
 > Minden egyes oldal meghívása, hogy hogy épül fel az alkalmazás, a megjelenítés elrendezésének alaphelyzetbe állítása. Még a mindig megjelenített profil tulajdonságai is.
@@ -66,4 +66,4 @@ A jelszavakat titkosítva mentjük le.
 *Lehetővé teszi az átlátható grafikus felület használatát.*
 Szükséges volt a felhasználóbarát felület létrehozásának céljából.
 ## A program beüzemlésének rövid leírása:
-Speciális rendszerkövetelmények nincsenek, Windows-on, MacOS-en, Linux-on is futtatható, de **Python** telepítése szükséges. A program elindításához indítsa el (dupla kattintással) a **start.bat** fájlt, ha Windows gépe van, a **start.sh** fájlt, ha MacOS vagy Linux gépe van.
+Speciális rendszerkövetelmények nincsenek, Windows-on, MacOS-en, Linux-on is futtatható, de **Python** és a PyQt5 külső python könyvtár telepítése és a szükséges. A program elindításához indítsa el (dupla kattintással) a **start.bat** fájlt, ha Windows gépe van, a **start.sh** fájlt, ha MacOS vagy Linux gépe van.

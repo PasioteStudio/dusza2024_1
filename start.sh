@@ -1,2 +1,3 @@
 #!/bin/bash
-py gui.py
+pip install -r requirements.txt
+python3 gui.py
