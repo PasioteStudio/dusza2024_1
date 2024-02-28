@@ -1,10 +1,5 @@
-Sigmakik;Példa játék;2;2
-Példa Béla
-Példa Ákos
-Példa program teljesítési ideje
-Példa program kimenetelének eredménye
-Sigmakik;Példa2;2;2
-Példa Béla
-Példa János
-Példa kimenetel
-Példa teljesítési idő
+Sigmakik;Példa;2;2
+Béla
+János
+program kimenetele
+program futási ideje

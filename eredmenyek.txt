@@ -1,5 +1,5 @@
-Példa játék
-Példa Béla;Példa program teljesítési ideje;30;1.4
-Példa Béla;Példa program kimenetelének eredménye;Hello World;6.2
-Példa Ákos;Példa program teljesítési ideje;12;1.4
-Példa Ákos;Példa program kimenetelének eredménye;Hello World;1.4
+Példa
+Béla;program kimenetele;Hello;6.2
+Béla;program futási ideje;Hello;1.4
+János;program kimenetele;Hello;1.4
+János;program futási ideje;Hello;1.4

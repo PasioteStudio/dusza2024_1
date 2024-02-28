@@ -1,3 +1,1 @@
-Én;Allah megidézése;50;Béla;Alvás;20
-Sigmakik;Példa játék;25;Példa Béla;Példa program kimenetelének eredménye;Hello World
-Sigmakik2;Példa2;50;Példa János;Példa teljesítési idő;32
+Sigmakik;Példa;30;Béla;program kimenetele;Hello
